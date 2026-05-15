@@ -74,8 +74,7 @@ Nama Database Lokal: `acufara_db`
 
 ### 4.1 Tabel Organisasi, Autentikasi & CMS
 
-1. `branches`:
-- `id`, `nama_cabang`, `alamat`, `is_active`, `timestamps`, `deleted_at`.
+1. `branches`: `id`, `nama_cabang`, `alamat`, `is_active`, `timestamps`, `deleted_at`.
 
 2. `users`:
     - `id`, `name`, `whatsapp_number` (unique), `email` (nullable), `password` (nullable), `branch_id` (nullable).
