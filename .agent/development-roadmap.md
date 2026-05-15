@@ -53,12 +53,13 @@ Urutan instalasi:
 
 > Catatan kompatibilitas: roadmap awal memakai Filament v3, tetapi Laravel 13 membutuhkan ekosistem Filament yang lebih baru. Project ini memakai Filament v5; plugin yang terikat Filament harus memakai rilis yang mendukung Filament v5.
 
-### Langkah 3 — Konfigurasi Awal Laravel `[ ]`
+### Langkah 3 — Konfigurasi Awal Laravel `[x]`
 
 - Set `config/app.php`: timezone → `Asia/Jakarta`, locale → `id`
 - Set `config/database.php`: default connection → `pgsql`
 - Set `config/filesystems.php`: tambahkan disk `gcs` (dari template `.env`)
-- Publish config Spatie MediaLibrary: `php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="migrations"`
+- Publish migration Spatie MediaLibrary: `php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-migrations"`
+- Publish config Spatie MediaLibrary: `php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="medialibrary-config"`
 - Publish config Spatie Permission: `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"`
 
 ---
