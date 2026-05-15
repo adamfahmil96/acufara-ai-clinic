@@ -32,7 +32,7 @@ Jika token AI habis di tengah jalan, cukup sebutkan **"lanjutkan dari Langkah X"
 - Buat `.env.example` sesuai template di `blueprint.md` § 6
 - Verifikasi: `docker-compose up -d` berjalan tanpa error
 
-### Langkah 2 — Instalasi Laravel 13 & Package Utama `[ ]`
+### Langkah 2 — Instalasi Laravel 13 & Package Utama `[x]`
 
 Urutan instalasi:
 1. Install Laravel 13 ke temp dir lalu merge ke project (folder tidak kosong):
@@ -42,14 +42,16 @@ Urutan instalasi:
    rm -rf /tmp/acufara-temp
    ```
    > `--ignore-existing` memastikan file kustom kita (Dockerfile, `.env.example`, dll.) **tidak tertimpa** oleh default Laravel.
-2. `composer require filament/filament:"^3.0" -W`
+2. `composer require filament/filament:"^5.0" -W`
 3. `php artisan filament:install --panels`
 4. `composer require spatie/laravel-permission`
-5. `composer require bezhansalleh/filament-shield`
+5. `composer require bezhansalleh/filament-shield:"^4.0"`
 6. `composer require spatie/laravel-medialibrary`
 7. `composer require spatie/image-optimizer`
 8. `composer require league/flysystem-google-cloud-storage`
-9. `composer require saade/filament-fullcalendar:"^3.0"`
+9. `composer require saade/filament-fullcalendar:"^4.0@beta"`
+
+> Catatan kompatibilitas: roadmap awal memakai Filament v3, tetapi Laravel 13 membutuhkan ekosistem Filament yang lebih baru. Project ini memakai Filament v5; plugin yang terikat Filament harus memakai rilis yang mendukung Filament v5.
 
 ### Langkah 3 — Konfigurasi Awal Laravel `[ ]`
 

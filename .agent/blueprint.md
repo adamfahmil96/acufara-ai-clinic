@@ -32,7 +32,7 @@ Anda bertindak sebagai Senior Software Engineer. Tugas Anda adalah membangun sis
 
 - **Penyimpanan Awan**: Package league/flysystem-google-cloud-storage (Siapkan konfigurasi di filesystems.php).
 
-- **Frontend Dashboard**: Filament PHP v3 + saade/filament-fullcalendar + SpatieMediaLibraryFileUpload.
+- **Frontend Dashboard**: Filament PHP v5 + saade/filament-fullcalendar v4 beta + SpatieMediaLibraryFileUpload.
 
 - **Frontend Landing Page**: Blade Templates + Alpine.js + Tailwind CSS (Palet: Sage Green, Beige).
 
@@ -113,9 +113,9 @@ Jalankan instruksi berikut secara berurutan:
 
 1. Buatkan `Dockerfile` produksi dengan FrankenPHP, PHP 8.4, lib gambar (gd, exif), dan `docker-compose.yml` untuk PostgreSQL.
 
-2. Lakukan instalasi Laravel 13, Filament v3, Spatie Permissions, dan konfigurasikan `league/flysystem-google-cloud-storage`.
+2. Lakukan instalasi Laravel 13, Filament v5, Spatie Permissions, dan konfigurasikan `league/flysystem-google-cloud-storage`.
 
-3. Instal plugin pendukung: `saade/filament-fullcalendar:^3.0`, `spatie/laravel-medialibrary`, `spatie/image-optimizer`.
+3. Instal plugin pendukung: `saade/filament-fullcalendar:^4.0@beta`, `spatie/laravel-medialibrary`, `spatie/image-optimizer`.
 
 4. Publish migrasi Spatie MediaLibrary.
 

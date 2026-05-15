@@ -28,7 +28,7 @@ Visual scheduling and multi-tenant operational analytics (Superadmin vs. Branch 
 
 - **Backend**: Laravel 13, PHP 8.4
 
-- **Frontend (Admin)**: Filament PHP v3 (TALL Stack)
+- **Frontend (Admin)**: Filament PHP v5 (TALL Stack)
 
 - **Frontend (Public)**: Blade, Alpine.js, Tailwind CSS
 

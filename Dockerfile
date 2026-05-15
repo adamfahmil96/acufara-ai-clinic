@@ -1,38 +1,7 @@
 # ============================================================
-# Stage 1: Composer Dependencies
+# Stage 1: Shared PHP Runtime
 # ============================================================
-FROM composer:2.8 AS vendor
-
-WORKDIR /app
-
-COPY composer.json composer.lock ./
-
-RUN composer install \
-    --no-dev \
-    --no-interaction \
-    --no-scripts \
-    --prefer-dist \
-    --optimize-autoloader
-
-# ============================================================
-# Stage 2: Node.js Assets (Frontend Build)
-# ============================================================
-FROM node:22-alpine AS frontend
-
-WORKDIR /app
-
-COPY package*.json ./
-RUN npm ci
-
-COPY resources/ ./resources/
-COPY vite.config.js tailwind.config.js postcss.config.js ./
-
-RUN npm run build
-
-# ============================================================
-# Stage 3: Production Image (FrankenPHP)
-# ============================================================
-FROM dunglas/frankenphp:1-php8.4-alpine AS production
+FROM dunglas/frankenphp:1-php8.4-alpine AS php-base
 
 # Install system dependencies
 RUN apk add --no-cache \
@@ -56,7 +25,7 @@ RUN apk add --no-cache \
     gifsicle \
     libavif-dev
 
-# Install PHP extensions
+# Install PHP extensions required by Laravel 13, Filament 5, PostgreSQL, and media processing
 RUN install-php-extensions \
     gd \
     exif \
@@ -69,11 +38,43 @@ RUN install-php-extensions \
     redis \
     bcmath
 
-# Configure GD with full image support
-RUN docker-php-ext-configure gd \
-    --with-freetype \
-    --with-jpeg \
-    --with-webp
+# ============================================================
+# Stage 2: Composer Dependencies
+# ============================================================
+FROM php-base AS vendor
+
+COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-scripts \
+    --prefer-dist \
+    --optimize-autoloader
+
+# ============================================================
+# Stage 3: Node.js Assets (Frontend Build)
+# ============================================================
+FROM node:22-alpine AS frontend
+
+WORKDIR /app
+
+COPY package*.json ./
+RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
+
+COPY resources/ ./resources/
+COPY vite.config.js ./
+
+RUN npm run build
+
+# ============================================================
+# Stage 4: Production Image (FrankenPHP)
+# ============================================================
+FROM php-base AS production
 
 # PHP production configuration
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
@@ -94,12 +95,6 @@ COPY . .
 # Set correct permissions
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache \
     && chmod -R 775 /app/storage /app/bootstrap/cache
-
-# Optimize Laravel for production
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan event:cache
 
 EXPOSE 80 443 443/udp
 

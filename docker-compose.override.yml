@@ -10,6 +10,9 @@ services:
       SERVER_NAME: ":80"
       APP_ENV: local
       APP_DEBUG: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
       # Disable OPcache validate_timestamps agar perubahan kode langsung terlihat
       PHP_OPCACHE_VALIDATE_TIMESTAMPS: "1"
     volumes:
