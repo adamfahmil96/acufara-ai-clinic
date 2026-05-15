@@ -1,0 +1,53 @@
+# Version Control
+.git
+.gitignore
+.gitattributes
+
+# Development tools
+.agent
+.idea
+.vscode
+*.code-workspace
+
+# Node modules
+node_modules
+
+# Laravel sensitive & development files
+.env
+.env.backup
+.env.local
+
+# Storage (user uploads — tidak di-bake ke image)
+storage/app/public/*
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+!storage/framework/.gitignore
+!storage/logs/.gitignore
+!storage/app/public/.gitignore
+
+# Bootstrap cache
+bootstrap/cache/*.php
+
+# Tests
+tests
+phpunit.xml
+phpunit.xml.dist
+
+# Documentation
+*.md
+!README.md
+
+# Docker files (tidak perlu di dalam image)
+docker-compose*.yml
+Dockerfile
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Misc
+.DS_Store
+Thumbs.db
+*.log

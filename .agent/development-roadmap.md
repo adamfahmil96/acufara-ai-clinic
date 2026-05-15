@@ -22,7 +22,7 @@ Jika token AI habis di tengah jalan, cukup sebutkan **"lanjutkan dari Langkah X"
 
 > Tujuan: Repo siap jalan di Docker lokal. Semua package terinstall. Database bisa di-migrate.
 
-### Langkah 1 — Docker & Konfigurasi Lingkungan `[ ]`
+### Langkah 1 — Docker & Konfigurasi Lingkungan `[x]`
 
 - Buat `Dockerfile` multi-stage (FrankenPHP, PHP 8.4)
   - Sertakan ekstensi: `ext-gd`, `ext-exif`, `ext-pgsql`, `ext-pcntl`
@@ -35,7 +35,7 @@ Jika token AI habis di tengah jalan, cukup sebutkan **"lanjutkan dari Langkah X"
 ### Langkah 2 — Instalasi Laravel 13 & Package Utama `[ ]`
 
 Urutan instalasi:
-1. `composer create-project laravel/laravel .` (jika belum ada `artisan`)
+1. `composer create-project laravel/laravel:"^13.0" .` (jika belum ada `artisan`)
 2. `composer require filament/filament:"^3.0" -W`
 3. `php artisan filament:install --panels`
 4. `composer require spatie/laravel-permission`
