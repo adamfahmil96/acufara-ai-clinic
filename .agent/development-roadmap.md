@@ -35,7 +35,13 @@ Jika token AI habis di tengah jalan, cukup sebutkan **"lanjutkan dari Langkah X"
 ### Langkah 2 — Instalasi Laravel 13 & Package Utama `[ ]`
 
 Urutan instalasi:
-1. `composer create-project laravel/laravel:"^13.0" .` (jika belum ada `artisan`)
+1. Install Laravel 13 ke temp dir lalu merge ke project (folder tidak kosong):
+   ```bash
+   composer create-project laravel/laravel:"^13.0" /tmp/acufara-temp
+   rsync -av --ignore-existing /tmp/acufara-temp/ .
+   rm -rf /tmp/acufara-temp
+   ```
+   > `--ignore-existing` memastikan file kustom kita (Dockerfile, `.env.example`, dll.) **tidak tertimpa** oleh default Laravel.
 2. `composer require filament/filament:"^3.0" -W`
 3. `php artisan filament:install --panels`
 4. `composer require spatie/laravel-permission`
