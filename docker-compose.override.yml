@@ -23,6 +23,7 @@ services:
       - /app/public/build
       - /app/bootstrap/cache
       - acufara_storage:/app/storage/app/public
+      - ./docker/caddy/Caddyfile.d:/etc/caddy/Caddyfile.d:ro
     # Override production CMD untuk development
     command: ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch"]
 

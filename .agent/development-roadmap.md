@@ -68,7 +68,7 @@ Urutan instalasi:
 
 > Tujuan: Semua tabel terbuat sesuai blueprint. Seeder bisa dijalankan.
 
-### Langkah 4 — Migrasi Tabel Inti `[ ]`
+### Langkah 4 — Migrasi Tabel Inti `[/]`
 
 Buat migration files (urutan sesuai foreign key dependency):
 

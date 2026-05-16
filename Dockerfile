@@ -80,6 +80,11 @@ FROM php-base AS production
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
+# The base FrankenPHP Caddyfile imports Caddyfile.d/*.caddyfile.
+# Keep a harmless placeholder so local --watch mode does not spam warnings.
+RUN mkdir -p /etc/caddy/Caddyfile.d \
+    && printf '# Placeholder for optional Caddy snippets.\n' > /etc/caddy/Caddyfile.d/placeholder.caddyfile
+
 # Set working directory
 WORKDIR /app
 
