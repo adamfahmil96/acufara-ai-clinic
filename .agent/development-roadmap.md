@@ -131,7 +131,7 @@ Buat Model untuk setiap tabel dengan:
 - Buat policies untuk semua Resource
 - Jalankan: `php artisan shield:generate --all`
 
-### Langkah 8 — Resource CRUD Dasar `[ ]`
+### Langkah 8 — Resource CRUD Dasar `[x]`
 
 Buat Filament Resource untuk (urutan dari yang paling sederhana):
 
