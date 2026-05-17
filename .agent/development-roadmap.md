@@ -124,7 +124,7 @@ Buat Model untuk setiap tabel dengan:
 
 > Tujuan: CRUD lengkap semua entitas utama. Role-based access terkonfigurasi.
 
-### Langkah 7 — Setup Filament Panel & Shield `[ ]`
+### Langkah 7 — Setup Filament Panel & Shield `[x]`
 
 - Konfigurasi `AdminPanelProvider`: path `/admin`, auth, brand, warna tema
 - Install Filament Shield: `php artisan shield:install`

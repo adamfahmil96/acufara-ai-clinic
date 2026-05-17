@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,10 +28,13 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
+            ->brandName(config('app.name', 'Acufara AI Clinic'))
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Olive,
+                'gray' => Color::Stone,
             ])
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -40,6 +44,12 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+            ])
+            ->plugins([
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Akses')
+                    ->navigationLabel('Role & Permission')
+                    ->navigationSort(99),
             ])
             ->middleware([
                 EncryptCookies::class,
