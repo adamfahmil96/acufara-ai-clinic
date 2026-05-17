@@ -220,12 +220,29 @@ docker compose up -d --force-recreate app
 
 Jika build gagal karena masalah network/TLS saat mengakses Alpine repository, itu bukan selalu kesalahan Dockerfile. Untuk local development, mount `docker/caddy/Caddyfile.d` tetap membuat solusi Caddy warning aktif tanpa rebuild.
 
-## Command Harian
+## Command Harian Docker
 
-Start semua service:
+Bagian ini berisi command sederhana yang sering dipakai sehari-hari saat development.
+
+### Start, Stop, dan Restart
+
+Start semua service di background:
 
 ```bash
 docker compose up -d
+```
+
+Start service tertentu saja:
+
+```bash
+docker compose up -d app
+docker compose up -d db
+```
+
+Start sekaligus build ulang image:
+
+```bash
+docker compose up -d --build
 ```
 
 Stop semua service:
@@ -234,10 +251,55 @@ Stop semua service:
 docker compose down
 ```
 
-Cek container:
+Stop container tanpa menghapus network:
+
+```bash
+docker compose stop
+```
+
+Start lagi container yang sebelumnya di-stop:
+
+```bash
+docker compose start
+```
+
+Restart semua service:
+
+```bash
+docker compose restart
+```
+
+Restart service tertentu:
+
+```bash
+docker compose restart app
+docker compose restart db
+```
+
+Recreate app setelah `.env` atau compose config berubah:
+
+```bash
+docker compose up -d --force-recreate app
+```
+
+### Status dan Monitoring
+
+Cek status semua container di project:
 
 ```bash
 docker compose ps
+```
+
+Cek semua container Docker yang sedang berjalan:
+
+```bash
+docker ps
+```
+
+Cek semua container, termasuk yang sudah berhenti:
+
+```bash
+docker ps -a
 ```
 
 Cek log app:
@@ -246,23 +308,143 @@ Cek log app:
 docker logs -f --tail 100 acufara_app
 ```
 
+Alternatif log via Compose:
+
+```bash
+docker compose logs -f app
+docker compose logs --tail 100 app
+```
+
+Cek log semua service:
+
+```bash
+docker compose logs -f
+```
+
+### Masuk ke Container
+
 Masuk shell app:
 
 ```bash
 docker compose exec app sh
 ```
 
-Jalankan artisan:
+Masuk shell database:
 
 ```bash
+docker compose exec db sh
+```
+
+Jalankan command sekali tanpa masuk shell:
+
+```bash
+docker compose exec app php -v
 docker compose exec app php artisan about
+```
+
+### Laravel Artisan di Container
+
+Jalankan migration:
+
+```bash
 docker compose exec app php artisan migrate
 ```
 
-Recreate app setelah `.env` atau compose config berubah:
+Rollback migration terakhir:
 
 ```bash
+docker compose exec app php artisan migrate:rollback
+```
+
+Cek status migration:
+
+```bash
+docker compose exec app php artisan migrate:status
+```
+
+Jalankan seeder:
+
+```bash
+docker compose exec app php artisan db:seed
+```
+
+Clear cache Laravel:
+
+```bash
+docker compose exec app php artisan optimize:clear
+```
+
+Generate app key:
+
+```bash
+php artisan key:generate --force
 docker compose up -d --force-recreate app
+```
+
+### Build dan Image
+
+Build image app:
+
+```bash
+docker compose build app
+```
+
+Build tanpa cache:
+
+```bash
+docker compose build --no-cache app
+```
+
+Lihat daftar image:
+
+```bash
+docker images
+```
+
+### Volume dan Cleanup
+
+Lihat volume Docker:
+
+```bash
+docker volume ls
+```
+
+Stop service dan hapus container/network, tetapi volume database tetap aman:
+
+```bash
+docker compose down
+```
+
+Stop service dan hapus volume project. Hati-hati, ini akan menghapus data database lokal:
+
+```bash
+docker compose down -v
+```
+
+Bersihkan resource Docker yang tidak dipakai:
+
+```bash
+docker system prune
+```
+
+### Database PostgreSQL
+
+Masuk ke PostgreSQL dengan `psql`:
+
+```bash
+docker compose exec db psql -U postgres -d acufara_db
+```
+
+Cek koneksi PostgreSQL:
+
+```bash
+docker compose exec db pg_isready -U postgres -d acufara_db
+```
+
+Lihat log database:
+
+```bash
+docker compose logs -f db
 ```
 
 ## Troubleshooting Cepat
