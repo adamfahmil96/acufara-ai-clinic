@@ -108,7 +108,7 @@ Buat Model untuk setiap tabel dengan:
 - Model `SoapNote` → tambahkan trait `InteractsWithMedia` + konversi thumbnail WebP
 - Model `User` → custom login field (`whatsapp_number`), OTP helper methods
 
-### Langkah 6 — Seeder & Akun Superadmin `[ ]`
+### Langkah 6 — Seeder & Akun Superadmin `[x]`
 
 - Buat `DatabaseSeeder` yang memanggil:
   - `RolePermissionSeeder` → seed roles: `super_admin`, `branch_admin`, `patient`
