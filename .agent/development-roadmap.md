@@ -99,7 +99,7 @@ Buat migration files (urutan sesuai foreign key dependency):
 
 - Jalankan: `php artisan migrate`
 
-### Langkah 5 — Model Eloquent `[ ]`
+### Langkah 5 — Model Eloquent `[x]`
 
 Buat Model untuk setiap tabel dengan:
 - `$fillable`, `$casts`, relasi Eloquent
