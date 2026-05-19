@@ -183,7 +183,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
   - `POST /login/verify` → verifikasi OTP, login user, redirect ke booking
 - Buat Blade view: halaman login pasien (desain Sage Green + Beige)
 
-### Langkah 12 — Landing Page Publik `[ ]`
+### Langkah 12 — Landing Page Publik `[x]`
 
 - Buat layout utama `layouts/app.blade.php` (Tailwind CSS, Alpine.js, palet Sage Green/Beige)
 - Buat sections landing page (konten dari `site_settings`):
