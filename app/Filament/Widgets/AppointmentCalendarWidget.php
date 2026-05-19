@@ -12,6 +12,15 @@ class AppointmentCalendarWidget extends FullCalendarWidget
     use InteractsWithPageFilters;
 
     protected static ?int $sort = 2;
+
+    protected function headerActions(): array
+    {
+        return [
+            \Filament\Actions\Action::make('create')
+                ->label('Buat Jadwal Baru')
+                ->url(fn () => \App\Filament\Resources\Appointments\AppointmentResource::getUrl('create')),
+        ];
+    }
     
     /**
      * Return events that should be rendered statically on calendar.
