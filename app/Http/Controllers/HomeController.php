@@ -11,11 +11,12 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $settings = SiteSetting::first();
-        
+        // Ambil semua settings sebagai key => value collection
+        $settings = SiteSetting::pluck('setting_value', 'setting_key');
+
         // Ambil 3 layanan secara acak atau yang pertama
         $services = Service::limit(3)->get();
-        
+
         // Ambil 3 artikel terbaru
         $articles = Article::latest()->limit(3)->get();
 

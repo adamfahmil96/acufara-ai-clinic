@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', $settings->site_name ?? 'Acufara AI Clinic')
-@section('meta_description', $settings->site_description ?? 'Sistem manajemen klinik terpadu dengan integrasi AI Voice dan WhatsApp.')
+@section('title', $settings->get('seo.meta_title', 'Acufara AI Clinic'))
+@section('meta_description', $settings->get('seo.meta_description', 'Sistem manajemen klinik terpadu dengan integrasi AI Voice dan WhatsApp.'))
 
 @section('content')
     <!-- Hero Section -->
@@ -11,16 +11,15 @@
                 <main class="mt-10 mx-auto max-w-7xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
                     <div class="sm:text-center lg:text-left">
                         <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                            <span class="block xl:inline">{{ $settings->site_name ?? 'Acufara Clinic' }}</span>
-                            <span class="block text-sage">Klinik Berbasis AI</span>
+                            <span class="block xl:inline">{{ $settings->get('hero.title', 'Akupunktur, Bekam, Baby Spa By Acufara') }}</span>
                         </h1>
                         <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                            {{ $settings->site_description ?? 'Sistem manajemen klinik terpadu dengan integrasi AI Voice dan WhatsApp. Membantu Anda mendapatkan layanan akupunktur dan kecantikan terbaik dengan lebih mudah dan cerdas.' }}
+                            {{ $settings->get('hero.subtitle', 'Perawatan holistik dengan alur booking yang mudah dan rekam medis digital.') }}
                         </p>
                         <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                             <div class="rounded-md shadow">
                                 <a href="{{ route('booking.create') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-sage hover-bg-sage md:py-4 md:text-lg md:px-10 transition">
-                                    Buat Jadwal Sekarang
+                                    {{ $settings->get('hero.cta_label', 'Booking Sekarang') }}
                                 </a>
                             </div>
                             <div class="mt-3 sm:mt-0 sm:ml-3">

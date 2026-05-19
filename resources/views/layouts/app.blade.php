@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
+@php
+    $siteSettings = \App\Models\SiteSetting::pluck('setting_value', 'setting_key');
+@endphp
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,7 +39,7 @@
             <div class="flex justify-between h-16 items-center">
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('home') }}" class="text-2xl font-bold text-sage">
-                        Acufara
+                        {{ $siteSettings->get('header.brand_name', 'Acufara') }}
                     </a>
                 </div>
                 <nav class="hidden md:flex space-x-8">
@@ -72,12 +75,21 @@
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="md:flex md:items-center md:justify-between">
                 <div class="flex justify-center md:justify-start space-x-6 md:order-2">
-                    <span class="text-gray-500">Klinik Akupunktur & Kecantikan dengan Asisten AI</span>
+                    @if($siteSettings->get('footer.instagram'))
+                        <a href="{{ $siteSettings->get('footer.instagram') }}" target="_blank" class="text-gray-500 hover:text-sage transition">
+                            Instagram
+                        </a>
+                    @endif
                 </div>
                 <div class="mt-8 md:mt-0 md:order-1">
                     <p class="text-center md:text-left text-base text-gray-400">
-                        &copy; {{ date('Y') }} Acufara Clinic & Spa. All rights reserved.
+                        &copy; {{ date('Y') }} {{ $siteSettings->get('header.brand_name', 'Acufara Clinic & Spa') }}. All rights reserved.
                     </p>
+                    @if($siteSettings->get('footer.address'))
+                        <p class="text-center md:text-left text-sm text-gray-400 mt-1">
+                            {{ $siteSettings->get('footer.address') }}
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>
