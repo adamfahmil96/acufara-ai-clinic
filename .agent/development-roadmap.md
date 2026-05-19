@@ -154,7 +154,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
    - Section **"Therapy"**: `treatment_details` (Dynamic Form JSON), Plan, Upload Foto
    - Field `raw_transcript` (textarea) + tombol **AcuVoice** (ditambahkan di Langkah 13)
 
-### Langkah 10 — Dashboard & Kalender `[ ]`
+### Langkah 10 — Dashboard & Kalender `[x]`
 
 - Buat widget Filament:
   - `StatsOverviewWidget`: jumlah appointment hari ini, pasien baru, pendapatan

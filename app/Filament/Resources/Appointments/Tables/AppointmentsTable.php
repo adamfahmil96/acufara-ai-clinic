@@ -83,7 +83,8 @@ class AppointmentsTable
                     ->requiresConfirmation()
                     ->action(fn (Appointment $record) => $record->update(['status' => Appointment::STATUS_COMPLETED]))
                     ->visible(fn (Appointment $record) => $record->status === Appointment::STATUS_IN_PROGRESS),
-                EditAction::make(),
+                \Filament\Actions\ViewAction::make(),
+                \Filament\Actions\EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
