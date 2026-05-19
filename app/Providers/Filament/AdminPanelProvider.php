@@ -3,6 +3,8 @@
 namespace App\Providers\Filament;
 
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -23,6 +25,15 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function register(): void
+    {
+        parent::register();
+
+        FilamentAsset::register([
+            Js::make('acuvoice', __DIR__ . '/../../../resources/js/acuvoice.js'),
+        ]);
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel

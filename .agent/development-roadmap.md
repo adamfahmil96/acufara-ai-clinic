@@ -202,7 +202,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 
 > Tujuan: Dua fitur AI utama berfungsi end-to-end.
 
-### Langkah 13 — AcuVoice: Hands-Free SOAP Notes `[ ]`
+### Langkah 13 — AcuVoice: Hands-Free SOAP Notes `[x]`
 
 - Buat `GeminiService` (HTTP Client wrapper):
   - Method `formatSoapNote(string $rawTranscript): array` → kirim ke Gemini API, kembalikan array SOAP terstruktur
