@@ -143,7 +143,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 6. `SiteSettingResource` — Key-Value settings dengan Tabs UI:
    - Tab Header, Tab Konten, Tab Footer, Tab SEO
 
-### Langkah 9 — Resource Transaksional `[ ]`
+### Langkah 9 — Resource Transaksional `[x]`
 
 1. `AppointmentResource`:
    - Form: pilih pasien, layanan, cabang, jadwal, lokasi (clinic/homecare)

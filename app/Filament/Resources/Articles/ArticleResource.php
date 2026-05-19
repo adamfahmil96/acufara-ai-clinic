@@ -14,10 +14,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -65,6 +67,12 @@ class ArticleResource extends Resource
                     ->label('Ringkasan')
                     ->rows(3)
                     ->columnSpanFull(),
+                SpatieMediaLibraryFileUpload::make('image')
+                    ->label('Gambar Utama')
+                    ->collection('default')
+                    ->conversion('thumb')
+                    ->image()
+                    ->columnSpanFull(),
                 RichEditor::make('content')
                     ->label('Konten')
                     ->required()
@@ -83,6 +91,11 @@ class ArticleResource extends Resource
     {
         return $table
             ->columns([
+                SpatieMediaLibraryImageColumn::make('image')
+                    ->label('Gambar')
+                    ->collection('default')
+                    ->conversion('thumb')
+                    ->circular(),
                 TextColumn::make('title')
                     ->label('Judul')
                     ->searchable()
