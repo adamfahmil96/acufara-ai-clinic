@@ -170,7 +170,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 
 > Tujuan: Pasien bisa registrasi/login via WhatsApp OTP. Landing page live.
 
-### Langkah 11 — WhatsApp OTP Authentication `[ ]`
+### Langkah 11 — WhatsApp OTP Authentication `[x]`
 
 - Buat `OtpService`:
   - `generate(string $waNumber)`: generate 4 digit OTP, simpan ke DB, kirim ke provider
