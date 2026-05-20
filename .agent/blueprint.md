@@ -50,9 +50,11 @@ Anda bertindak sebagai Senior Software Engineer. Tugas Anda adalah membangun sis
 
 ### B. Fitur AI 1: Smart Homecare Routing & Triage
 
-- **Alur**: Pasien form Booking -> Isi keluhan (`complaint_summary`) -> Klik tombol "Analisis Keluhan dengan AI" -> Sistem memanggil `POST /triage` (auth-protected, throttle 10/menit) -> Gemini AI menganalisis urgensi dan saran kunjungan -> Hasil ditampilkan di card dan disimpan ke kolom `ai_urgency`, `ai_recommendation`, `ai_notes` di tabel `appointments`.
+- **Alur Triage (Pasien)**: Pasien form Booking -> Isi keluhan (`complaint_summary`) -> Klik tombol "Analisis Keluhan dengan AI" -> Sistem memanggil `POST /triage` (auth-protected, throttle 10/menit) -> Gemini AI menganalisis urgensi dan saran kunjungan -> Hasil ditampilkan di card dan disimpan ke kolom `ai_urgency`, `ai_recommendation`, `ai_notes` di tabel `appointments`.
 
-- **Panel Admin**: Di `AppointmentResource` → tombol "🔍 Analisis Keluhan dengan AI" (Filament Action) tersedia di form edit untuk menganalisis keluhan pasien secara manual.
+- **Panel Admin (Triage)**: Di `AppointmentResource` → tombol "🔍 Analisis Keluhan dengan AI" (Filament Action) tersedia di form edit untuk menganalisis keluhan pasien secara manual.
+
+- **Alur Routing (Homecare)**: Admin/Terapis (Adik Ipar) membuka halaman khusus "Homecare Routing" di panel admin. Sistem mengambil daftar pasien `homecare` pada hari tertentu (berikut `lat`, `lng`, dan `address_at_time`). Gemini AI digunakan untuk menganalisis dan memberikan saran rute perjalanan serta jadwal kunjungan yang paling efisien berdasarkan jarak dan waktu tempuh.
 
 ### C. Fitur AI 2: AcuVoice (Hands-Free SOAP Notes) + Bukti Visual
 

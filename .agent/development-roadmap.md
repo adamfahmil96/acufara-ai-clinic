@@ -228,6 +228,14 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - Migration: tambah kolom `ai_urgency`, `ai_recommendation`, `ai_notes` ke tabel `appointments`
 - Model `Appointment`: kolom baru ditambahkan ke `$fillable`
 
+### Langkah 14b — Smart Homecare Routing (Rute Perjalanan & Jadwal) `[ ]`
+
+- Buat custom page di Filament: `HomecareRoutingPage`
+- **Fitur**: Memilih tanggal untuk melihat jadwal `homecare`
+- **Tampilan**: List jadwal homecare hari tersebut (nama pasien, alamat, layanan)
+- **AI Integration**: Tombol **"Optimasi Rute & Jadwal"** -> mengirimkan daftar alamat dan jam ke Gemini AI -> Gemini mengembalikan urutan kunjungan yang paling efisien berdasarkan lokasi agar terapis (adik ipar) tidak bolak-balik.
+- **Peta (Opsional)**: Tampilkan integrasi Leaflet/Maps sederhana untuk memvisualisasikan rute jika memungkinkan.
+
 ---
 
 ## FASE 5 — Polish, Testing & Deployment
