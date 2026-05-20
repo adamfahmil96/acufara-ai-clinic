@@ -61,6 +61,8 @@ class BookingController extends Controller
             'ai_urgency'        => 'nullable|string|max:50',
             'ai_recommendation' => 'nullable|string',
             'ai_notes'          => 'nullable|string',
+            'service_location_type' => 'required|in:clinic,homecare',
+            'address_at_time'   => 'nullable|required_if:service_location_type,homecare|string|max:500',
         ]);
 
         $patient = Auth::user()->patient;
@@ -79,7 +81,8 @@ class BookingController extends Controller
             'ai_recommendation' => $request->ai_recommendation,
             'ai_notes'          => $request->ai_notes,
             'status'            => Appointment::STATUS_SCHEDULED,
-            'service_location_type' => Appointment::LOCATION_CLINIC,
+            'service_location_type' => $request->service_location_type,
+            'address_at_time'   => $request->service_location_type === 'homecare' ? $request->address_at_time : null,
             'final_price'       => Service::find($request->service_id)->base_price ?? 0,
         ]);
 

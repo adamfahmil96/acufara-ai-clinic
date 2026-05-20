@@ -71,6 +71,40 @@
                 @enderror
             </div>
 
+            {{-- Tipe Layanan (Klinik / Homecare) --}}
+            <div x-data="{ locationType: '{{ old('service_location_type', 'clinic') }}' }">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tipe Kunjungan</label>
+                <div class="flex gap-4 mb-4">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="service_location_type" value="clinic" x-model="locationType" class="text-[#87A878] focus:ring-[#87A878] h-4 w-4">
+                        <span class="ml-2 text-sm text-gray-700">Kunjungan Klinik</span>
+                    </label>
+                    <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="service_location_type" value="homecare" x-model="locationType" class="text-[#87A878] focus:ring-[#87A878] h-4 w-4">
+                        <span class="ml-2 text-sm text-gray-700">Homecare (Panggilan ke Rumah)</span>
+                    </label>
+                </div>
+                @error('service_location_type')
+                    <p class="mt-1 text-sm text-red-600 mb-4">{{ $message }}</p>
+                @enderror
+
+                {{-- Alamat Homecare --}}
+                <div x-show="locationType === 'homecare'" x-transition class="mb-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                    <label for="address_at_time" class="block text-sm font-medium text-gray-700">Alamat Lengkap & Patokan Lokasi</label>
+                    <p class="text-xs text-gray-500 mb-2">Karena ini layanan Homecare, mohon tuliskan alamat selengkap mungkin untuk memudahkan terapis.</p>
+                    <div class="mt-1">
+                        <textarea id="address_at_time" name="address_at_time" rows="3"
+                            :required="locationType === 'homecare'"
+                            placeholder="Contoh: Jl. Mawar No 10, RT 02 RW 01, Desa Sukamaju. Rumah cat putih pagar hitam, sebelah warung madura."
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm resize-none"
+                        >{{ old('address_at_time') }}</textarea>
+                    </div>
+                    @error('address_at_time')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
             {{-- Keluhan & Analisis AI --}}
             <div x-data="triageAnalyzer()" x-init="init()">
                 <label for="complaint_summary" class="block text-sm font-medium text-gray-700">

@@ -192,4 +192,67 @@ PROMPT;
             'plan'       => '',
         ];
     }
+
+    /**
+     * Optimasi rute perjalanan homecare menggunakan Gemini.
+     * Mengembalikan Markdown berisi saran rute dari AI.
+     */
+    public function optimizeRoute($appointments, string $branchAddress): string
+    {
+        $appointmentDetails = [];
+        
+        foreach ($appointments as $idx => $apt) {
+            $patientName = $apt->patient->user->name ?? 'Pasien ' . ($idx + 1);
+            $time = \Carbon\Carbon::parse($apt->scheduled_at)->format('H:i');
+            $address = $apt->address_at_time ?? 'Alamat tidak diketahui';
+            $appointmentDetails[] = "- [{$time}] {$patientName} - Alamat: {$address}";
+        }
+
+        $appointmentsList = implode("\n", $appointmentDetails);
+
+        $prompt = <<<EOT
+Kamu adalah sistem asisten logistik untuk sebuah klinik yang melayani panggilan ke rumah (homecare).
+Tugasmu adalah menganalisis dan menyusun rute perjalanan yang paling efisien berdasarkan waktu kunjungan dan perkiraan lokasi dari teks alamat.
+
+Titik Keberangkatan (Cabang Klinik):
+{$branchAddress}
+
+Daftar Jadwal Pasien Hari Ini:
+{$appointmentsList}
+
+INSTRUKSI:
+1. Analisis teks alamat dan patokan lokasi dari masing-masing pasien.
+2. Pertimbangkan jam jadwal kunjungan (pastikan logis dengan urutan).
+3. Berikan saran rute perjalanan (Urutan Kunjungan) dari titik keberangkatan, ke pasien 1, pasien 2, dst.
+4. Jelaskan secara singkat mengapa rute tersebut efisien (misalnya "karena Pasien A dan B berada di area yang searah", jika informasinya ada).
+5. Tuliskan dalam bahasa Indonesia dengan format Markdown yang rapi (gunakan list/bullet points).
+6. Jangan sertakan disclaimer yang berlebihan, fokus pada rute dan jadwalnya.
+EOT;
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post($this->baseUrl . '/' . $this->model . ':generateContent?key=' . $this->apiKey, [
+            'contents' => [
+                [
+                    'parts' => [
+                        ['text' => $prompt]
+                    ]
+                ]
+            ],
+            'generationConfig' => [
+                'temperature' => 0.2, // Rendah agar logis dan tidak berhalusinasi terlalu jauh
+                'maxOutputTokens' => 1024,
+            ]
+        ]);
+
+        if ($response->failed()) {
+            Log::error('Gemini API Error (optimizeRoute): ' . $response->body());
+            throw new \Exception('Gagal menghubungi Gemini API untuk optimasi rute.');
+        }
+
+        $responseData = $response->json();
+        $text = $responseData['candidates'][0]['content']['parts'][0]['text'] ?? '';
+
+        return $text ?: 'Maaf, AI gagal memproses rekomendasi rute.';
+    }
 }
