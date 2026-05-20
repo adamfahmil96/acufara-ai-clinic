@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Services\GeocodeService;
 
 class Appointment extends Model
 {
@@ -38,6 +39,26 @@ class Appointment extends Model
         'final_price',
         'scheduled_at',
     ];
+
+    protected static function booted()
+    {
+        static::saving(function (Appointment $appointment) {
+            // Geocode otomatis via OpenStreetMap jika ini layanan homecare dan alamat diubah/baru
+            if (
+                $appointment->service_location_type === self::LOCATION_HOMECARE &&
+                $appointment->address_at_time &&
+                (!$appointment->lat || $appointment->isDirty('address_at_time'))
+            ) {
+                $geocode = app(GeocodeService::class);
+                $coords = $geocode->geocode($appointment->address_at_time);
+                
+                if ($coords['lat'] && $coords['lng']) {
+                    $appointment->lat = $coords['lat'];
+                    $appointment->lng = $coords['lng'];
+                }
+            }
+        });
+    }
 
     public function branch(): BelongsTo
     {

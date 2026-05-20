@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use UnitEnum;
 
 class HomecareRouting extends Page implements HasTable
@@ -39,6 +40,47 @@ class HomecareRouting extends Page implements HasTable
     public function mount(): void
     {
         $this->selectedDate = now()->toDateString();
+    }
+
+    protected function getViewData(): array
+    {
+        $appointments = Appointment::with('patient.user')
+            ->where('service_location_type', Appointment::LOCATION_HOMECARE)
+            ->whereDate('scheduled_at', $this->selectedDate)
+            ->orderBy('scheduled_at')
+            ->get();
+
+        $locations = [];
+        
+        // Asumsi titik start Klinik (Cabang Utama)
+        $locations[] = [
+            'name'      => 'Klinik Utama',
+            'lat'       => -7.5666, // Default Surakarta / Karanganyar border lat
+            'lng'       => 110.8166, // Default lng
+            'is_branch' => true,
+        ];
+
+        foreach ($appointments as $idx => $apt) {
+            $patientName = $apt->patient->user->name ?? 'Pasien ' . ($idx + 1);
+            $time        = Carbon::parse($apt->scheduled_at)->format('H:i');
+            
+            // Jika lat/lng kosong di database, berikan koordinat acak di sekitar klinik untuk keperluan demo visual.
+            // Di production, field lat & lng ini seharusnya diisi saat pasien menentukan alamat.
+            $lat = $apt->lat ?? (-7.5666 + (mt_rand(-50, 50) / 1000));
+            $lng = $apt->lng ?? (110.8166 + (mt_rand(-50, 50) / 1000));
+            
+            $locations[] = [
+                'name'      => "{$patientName} ({$time})",
+                'lat'       => (float) $lat,
+                'lng'       => (float) $lng,
+                'is_branch' => false,
+            ];
+        }
+
+        return [
+            'mapLocations' => $locations,
+            'mapId'        => 'map-' . Str::slug($this->selectedDate . '-' . now()->timestamp),
+        ];
     }
 
     public function table(Table $table): Table

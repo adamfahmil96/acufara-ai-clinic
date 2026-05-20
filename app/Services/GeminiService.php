@@ -281,4 +281,54 @@ EOT;
 
         return $text ?: 'Maaf, AI gagal memproses rekomendasi rute.';
     }
+
+    // -------------------------------------------------------------------------
+    // AI Geocoding
+    // -------------------------------------------------------------------------
+
+    /**
+     * Konversi teks alamat menjadi estimasi Latitude & Longitude dengan Gemini.
+     * 
+     * @param string $address Teks alamat yang dimasukkan pasien.
+     * @return array{lat: float|null, lng: float|null}
+     */
+    public function geocodeAddress(string $address): array
+    {
+        $prompt = <<<EOT
+Kamu adalah sistem Geocoding pintar untuk area Indonesia.
+Tugasmu adalah memberikan perkiraan koordinat Latitude dan Longitude untuk alamat berikut:
+
+Alamat: {$address}
+
+Berikan output HANYA dalam format JSON berikut (tanpa blok markdown, tanpa penjelasan lain):
+{
+  "lat": -7.5666,
+  "lng": 110.8166
+}
+Jika alamat sama sekali tidak masuk akal atau tidak valid, kembalikan null untuk keduanya.
+EOT;
+
+        try {
+            $response = $this->generateContent($prompt, ['temperature' => 0.1, 'maxOutputTokens' => 100]);
+            $text     = $response['candidates'][0]['content']['parts'][0]['text'] ?? '';
+            // Hapus tag <think> jika ada (untuk Gemini 2.5 Flash)
+            $text     = preg_replace('/<think>.*?<\/think>/is', '', $text);
+            $text     = preg_replace('/```json\s*/i', '', $text);
+            $text     = preg_replace('/```\s*/i', '', $text);
+            $text     = trim($text);
+
+            $data = json_decode($text, true);
+
+            if (json_last_error() === JSON_ERROR_NONE && isset($data['lat'], $data['lng'])) {
+                return [
+                    'lat' => is_numeric($data['lat']) ? (float) $data['lat'] : null,
+                    'lng' => is_numeric($data['lng']) ? (float) $data['lng'] : null,
+                ];
+            }
+        } catch (\Throwable $e) {
+            Log::error('[GeminiService] geocodeAddress error', ['message' => $e->getMessage()]);
+        }
+
+        return ['lat' => null, 'lng' => null];
+    }
 }
