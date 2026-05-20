@@ -11,10 +11,25 @@ class GeminiService
     protected string $model;
     protected string $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models';
 
+    /**
+     * Urutan fallback model (Mei 2026):
+     * 1. Model utama dari config/env (misal: gemini-3.5-flash)
+     * 2. gemini-2.5-flash      — stabil, free tier tersedia
+     * 3. gemini-2.5-flash-lite — paling ringan, kuota free tier paling besar
+     */
+    protected array $fallbackModels;
+
     public function __construct()
     {
         $this->apiKey = config('services.gemini.api_key', '');
         $this->model  = config('services.gemini.model', 'gemini-2.5-flash');
+
+        // Fallback otomatis jika model utama sedang 503/429
+        $this->fallbackModels = array_values(array_unique(array_filter([
+            $this->model,
+            'gemini-2.5-flash',
+            'gemini-2.5-flash-lite',
+        ])));
     }
 
     // -------------------------------------------------------------------------
@@ -151,33 +166,68 @@ PROMPT;
 
     /**
      * Panggil Gemini generateContent API.
+     * Jika model utama return 503 (high demand), otomatis coba model fallback.
      */
-    protected function generateContent(string $prompt): array
+    protected function generateContent(string $prompt, array $generationConfig = []): array
     {
-        $url = "{$this->baseUrl}/{$this->model}:generateContent?key={$this->apiKey}";
+        $config = array_merge([
+            'temperature'     => 0.2,
+            'maxOutputTokens' => 2048,
+        ], $generationConfig);
 
-        $response = Http::timeout(30)
-            ->post($url, [
-                'contents' => [
-                    [
-                        'parts' => [
-                            ['text' => $prompt],
+        $lastException = null;
+
+        foreach ($this->fallbackModels as $model) {
+            $url = "{$this->baseUrl}/{$model}:generateContent?key={$this->apiKey}";
+
+            try {
+                $response = Http::timeout(30)
+                    ->post($url, [
+                        'contents' => [
+                            [
+                                'parts' => [
+                                    ['text' => $prompt],
+                                ],
+                            ],
                         ],
-                    ],
-                ],
-                'generationConfig' => [
-                    'temperature'     => 0.2,
-                    'maxOutputTokens' => 2048,
-                ],
-            ]);
+                        'generationConfig' => $config,
+                    ]);
 
-        if (! $response->successful()) {
-            throw new \RuntimeException(
-                'Gemini API error: ' . $response->status() . ' — ' . $response->body()
-            );
+                // 503 = high demand | 429 = quota/rate-limit — coba model berikutnya
+                if (in_array($response->status(), [429, 503])) {
+                    $statusLabel = $response->status() === 503 ? 'high demand (503)' : 'quota exceeded (429)';
+                    Log::warning("[GeminiService] Model {$model} {$statusLabel}, mencoba fallback...");
+                    $lastException = new \RuntimeException(
+                        "Model {$model} {$response->status()}: " . $response->body()
+                    );
+                    continue;
+                }
+
+                if (! $response->successful()) {
+                    throw new \RuntimeException(
+                        'Gemini API error: ' . $response->status() . ' — ' . $response->body()
+                    );
+                }
+
+                if ($model !== $this->model) {
+                    Log::info("[GeminiService] Berhasil menggunakan fallback model: {$model}");
+                }
+
+                return $response->json();
+
+            } catch (\RuntimeException $e) {
+                $lastException = $e;
+                // Jika error bukan 503/429, langsung lempar (jangan coba fallback)
+                if (! preg_match('/\b(503|429)\b/', $e->getMessage())) {
+                    throw $e;
+                }
+            }
         }
 
-        return $response->json();
+        // Semua model gagal
+        throw new \RuntimeException(
+            'Semua model Gemini sedang tidak tersedia. ' . ($lastException?->getMessage() ?? '')
+        );
     }
 
     /**
@@ -200,58 +250,34 @@ PROMPT;
     public function optimizeRoute($appointments, string $branchAddress): string
     {
         $appointmentDetails = [];
-        
+
         foreach ($appointments as $idx => $apt) {
             $patientName = $apt->patient->user->name ?? 'Pasien ' . ($idx + 1);
-            $time = \Carbon\Carbon::parse($apt->scheduled_at)->format('H:i');
-            $address = $apt->address_at_time ?? 'Alamat tidak diketahui';
+            $time        = \Carbon\Carbon::parse($apt->scheduled_at)->format('H:i');
+            $address     = $apt->address_at_time ?? 'Alamat tidak diketahui';
             $appointmentDetails[] = "- [{$time}] {$patientName} - Alamat: {$address}";
         }
 
         $appointmentsList = implode("\n", $appointmentDetails);
 
         $prompt = <<<EOT
-Kamu adalah sistem asisten logistik untuk sebuah klinik yang melayani panggilan ke rumah (homecare).
-Tugasmu adalah menganalisis dan menyusun rute perjalanan yang paling efisien berdasarkan waktu kunjungan dan perkiraan lokasi dari teks alamat.
+Kamu adalah sistem asisten logistik rute homecare.
+Susun rute perjalanan yang PALING EFISIEN berdasarkan waktu dan lokasi.
 
-Titik Keberangkatan (Cabang Klinik):
-{$branchAddress}
-
-Daftar Jadwal Pasien Hari Ini:
+Titik Keberangkatan: {$branchAddress}
+Daftar Pasien:
 {$appointmentsList}
 
-INSTRUKSI:
-1. Analisis teks alamat dan patokan lokasi dari masing-masing pasien.
-2. Pertimbangkan jam jadwal kunjungan (pastikan logis dengan urutan).
-3. Berikan saran rute perjalanan (Urutan Kunjungan) dari titik keberangkatan, ke pasien 1, pasien 2, dst.
-4. Jelaskan secara singkat mengapa rute tersebut efisien (misalnya "karena Pasien A dan B berada di area yang searah", jika informasinya ada).
-5. Tuliskan dalam bahasa Indonesia dengan format Markdown yang rapi (gunakan list/bullet points).
-6. Jangan sertakan disclaimer yang berlebihan, fokus pada rute dan jadwalnya.
+INSTRUKSI SANGAT KETAT:
+1. Jawab LANGSUNG to the point (tanpa kalimat pembuka/penutup basa-basi).
+2. Berikan urutan rute perjalanan menggunakan bullet points.
+3. Sebutkan alasannya secara SANGAT SINGKAT (1 kalimat per titik) di sebelah rute tersebut.
+4. Pastikan teks tidak terpotong. Gunakan bahasa Indonesia.
 EOT;
 
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-        ])->post($this->baseUrl . '/' . $this->model . ':generateContent?key=' . $this->apiKey, [
-            'contents' => [
-                [
-                    'parts' => [
-                        ['text' => $prompt]
-                    ]
-                ]
-            ],
-            'generationConfig' => [
-                'temperature' => 0.2, // Rendah agar logis dan tidak berhalusinasi terlalu jauh
-                'maxOutputTokens' => 1024,
-            ]
-        ]);
-
-        if ($response->failed()) {
-            Log::error('Gemini API Error (optimizeRoute): ' . $response->body());
-            throw new \Exception('Gagal menghubungi Gemini API untuk optimasi rute.');
-        }
-
-        $responseData = $response->json();
-        $text = $responseData['candidates'][0]['content']['parts'][0]['text'] ?? '';
+        // Gunakan generateContent() agar otomatis fallback jika 503/429
+        $response = $this->generateContent($prompt, ['temperature' => 0.2, 'maxOutputTokens' => 2048]);
+        $text     = $response['candidates'][0]['content']['parts'][0]['text'] ?? '';
 
         return $text ?: 'Maaf, AI gagal memproses rekomendasi rute.';
     }
