@@ -33,4 +33,7 @@ Route::middleware(['auth'])->group(function () {
     // Booking Routes
     Route::get('/book', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/book', [BookingController::class, 'store'])->name('booking.store');
+
+    // AI Triage Endpoint (requires auth, rate limited to 10 req/min per user)
+    Route::post('/triage', [BookingController::class, 'triage'])->name('booking.triage')->middleware('throttle:10,1');
 });

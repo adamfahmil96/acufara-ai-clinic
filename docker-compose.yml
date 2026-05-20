@@ -17,7 +17,6 @@ services:
     volumes:
       # Development: mount source code for hot-reload
       - .:/app
-      - /app/vendor
       - /app/public/build
       # Persistent storage for uploaded media
       - acufara_storage:/app/storage/app/public

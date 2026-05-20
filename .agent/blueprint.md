@@ -50,7 +50,9 @@ Anda bertindak sebagai Senior Software Engineer. Tugas Anda adalah membangun sis
 
 ### B. Fitur AI 1: Smart Homecare Routing & Triage
 
-- **Alur**: Pasien form Booking -> Isi keluhan & area -> Sistem memanggil Gemini API untuk ekstraksi urgensi dan saran rute logistik berdasarkan koordinat.
+- **Alur**: Pasien form Booking -> Isi keluhan (`complaint_summary`) -> Klik tombol "Analisis Keluhan dengan AI" -> Sistem memanggil `POST /triage` (auth-protected, throttle 10/menit) -> Gemini AI menganalisis urgensi dan saran kunjungan -> Hasil ditampilkan di card dan disimpan ke kolom `ai_urgency`, `ai_recommendation`, `ai_notes` di tabel `appointments`.
+
+- **Panel Admin**: Di `AppointmentResource` → tombol "🔍 Analisis Keluhan dengan AI" (Filament Action) tersedia di form edit untuk menganalisis keluhan pasien secara manual.
 
 ### C. Fitur AI 2: AcuVoice (Hands-Free SOAP Notes) + Bukti Visual
 
@@ -98,6 +100,7 @@ Nama Database Lokal: `acufara_db`
     - `complaint_summary`, `status` (scheduled, in_progress, completed, cancelled).
     - `service_location_type` (clinic, homecare).
     - `address_at_time`, `lat` (decimal, 10,8), `lng` (decimal, 11,8).
+    - `ai_urgency` (string, nullable), `ai_recommendation` (text, nullable), `ai_notes` (text, nullable) — hasil analisis Gemini Triage.
     - `final_price`, `scheduled_at`, `timestamps`, `deleted_at`.
 
 ### 4.4 Tabel Rekam Medis

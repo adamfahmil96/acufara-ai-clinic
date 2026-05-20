@@ -214,14 +214,19 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
   - Filament Action → panggil `GeminiService::formatSoapNote()` → auto-fill field SOAP
 - Verifikasi: rekam suara → teks muncul → klik AI → field SOAP terisi otomatis
 
-### Langkah 14 — Smart Homecare Routing & Triage `[ ]`
+### Langkah 14 — Smart Homecare Routing & Triage `[x]`
 
-- Tambahkan ke form booking (langkah 12):
-  - Setelah pasien isi keluhan + area, tampilkan tombol **"Analisis Keluhan"**
-  - Panggil `GeminiService::analyzeComplaint()` via AJAX/Alpine
-  - Tampilkan response: urgensi keluhan + saran rute/waktu kunjungan
-- Tambahkan ke `AppointmentResource` (Admin):
-  - Widget atau info panel yang tampilkan hasil analisis AI
+- Ditambahkan ke form booking publik (`/book`):
+  - Field keluhan berganti dari `notes` ke `complaint_summary` (sesuai skema DB)
+  - Tombol **"🔍 Analisis Keluhan dengan AI"** (Alpine.js + `fetch` ke `POST /triage`)
+  - Card hasil analisis dengan badge urgensi (Rendah/Sedang/Tinggi), rekomendasi, dan catatan
+  - Endpoint `POST /triage` di `BookingController::triage()` (auth + throttle 10/menit)
+- Ditambahkan ke `AppointmentResource` (Admin):
+  - Filament Action **"🔍 Analisis Keluhan dengan AI"** di Section Keluhan Pasien
+  - Auto-fill field `ai_urgency`, `ai_recommendation`, `ai_notes`
+  - Section **"🤖 Hasil Analisis AI (Triage)"** di form (collapsed by default)
+- Migration: tambah kolom `ai_urgency`, `ai_recommendation`, `ai_notes` ke tabel `appointments`
+- Model `Appointment`: kolom baru ditambahkan ke `$fillable`
 
 ---
 

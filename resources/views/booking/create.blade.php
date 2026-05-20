@@ -4,32 +4,32 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <div class="bg-white rounded-lg shadow px-6 py-8 sm:p-10">
+    <div class="bg-white rounded-2xl shadow-md px-6 py-8 sm:p-10">
         <div class="mb-8 text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900 text-sage">Buat Jadwal Baru</h2>
+            <h2 class="text-3xl font-extrabold text-gray-900">Buat Jadwal Baru</h2>
             <p class="mt-2 text-sm text-gray-500">
                 Silakan lengkapi formulir di bawah ini untuk mengatur jadwal kunjungan Anda.
             </p>
         </div>
 
         @if (session('error'))
-            <div class="mb-4 bg-red-50 p-4 rounded-md">
+            <div class="mb-4 bg-red-50 border border-red-200 p-4 rounded-xl">
                 <p class="text-sm text-red-700">{{ session('error') }}</p>
             </div>
         @endif
 
         <form action="{{ route('booking.store') }}" method="POST" class="space-y-6">
             @csrf
-            
-            <!-- Pilihan Cabang -->
+
+            {{-- Pilihan Cabang --}}
             <div>
                 <label for="branch_id" class="block text-sm font-medium text-gray-700">Cabang Klinik / Lokasi</label>
                 <div class="mt-1">
-                    <select id="branch_id" name="branch_id" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#9cb4a1] focus:border-[#9cb4a1] sm:text-sm">
+                    <select id="branch_id" name="branch_id" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm">
                         <option value="">-- Pilih Cabang --</option>
                         @foreach($branches as $branch)
                             <option value="{{ $branch->id }}" {{ old('branch_id') == $branch->id ? 'selected' : '' }}>
-                                {{ $branch->name }} ({{ $branch->address ?? 'Alamat belum diatur' }})
+                                {{ $branch->nama_cabang }} ({{ $branch->alamat ?? 'Alamat belum diatur' }})
                             </option>
                         @endforeach
                     </select>
@@ -39,15 +39,15 @@
                 @enderror
             </div>
 
-            <!-- Pilihan Layanan -->
+            {{-- Pilihan Layanan --}}
             <div>
                 <label for="service_id" class="block text-sm font-medium text-gray-700">Layanan</label>
                 <div class="mt-1">
-                    <select id="service_id" name="service_id" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#9cb4a1] focus:border-[#9cb4a1] sm:text-sm">
+                    <select id="service_id" name="service_id" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm">
                         <option value="">-- Pilih Layanan --</option>
                         @foreach($services as $service)
                             <option value="{{ $service->id }}" {{ old('service_id') == $service->id ? 'selected' : '' }}>
-                                {{ $service->name }} - Rp {{ number_format($service->price, 0, ',', '.') }}
+                                {{ $service->name }} — Rp {{ number_format($service->base_price, 0, ',', '.') }}
                             </option>
                         @endforeach
                     </select>
@@ -57,34 +57,172 @@
                 @enderror
             </div>
 
-            <!-- Tanggal & Waktu -->
+            {{-- Tanggal & Waktu --}}
             <div>
-                <label for="scheduled_at" class="block text-sm font-medium text-gray-700">Tanggal & Waktu</label>
+                <label for="scheduled_at" class="block text-sm font-medium text-gray-700">Tanggal &amp; Waktu</label>
                 <div class="mt-1">
-                    <input type="datetime-local" id="scheduled_at" name="scheduled_at" required value="{{ old('scheduled_at') }}" min="{{ date('Y-m-d\TH:i') }}" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#9cb4a1] focus:border-[#9cb4a1] sm:text-sm">
+                    <input type="datetime-local" id="scheduled_at" name="scheduled_at" required
+                        value="{{ old('scheduled_at') }}"
+                        min="{{ date('Y-m-d\TH:i') }}"
+                        class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm">
                 </div>
                 @error('scheduled_at')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
-            <!-- Keluhan / Catatan -->
-            <div>
-                <label for="notes" class="block text-sm font-medium text-gray-700">Keluhan Singkat / Catatan (Opsional)</label>
+            {{-- Keluhan & Analisis AI --}}
+            <div x-data="triageAnalyzer()" x-init="init()">
+                <label for="complaint_summary" class="block text-sm font-medium text-gray-700">
+                    Keluhan Singkat <span class="text-gray-400 font-normal">(Opsional)</span>
+                </label>
                 <div class="mt-1">
-                    <textarea id="notes" name="notes" rows="3" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#9cb4a1] focus:border-[#9cb4a1] sm:text-sm">{{ old('notes') }}</textarea>
+                    <textarea
+                        id="complaint_summary"
+                        name="complaint_summary"
+                        rows="3"
+                        x-model="complaint"
+                        placeholder="Contoh: Sakit kepala dan pusing sejak 3 hari, terasa berat di leher bagian belakang..."
+                        class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm resize-none"
+                    >{{ old('complaint_summary') }}</textarea>
                 </div>
-                @error('notes')
+                @error('complaint_summary')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
+
+                {{-- Hidden Inputs untuk Hasil Triage agar tersimpan saat form disubmit --}}
+                <input type="hidden" name="ai_urgency" :value="result?.urgency || ''">
+                <input type="hidden" name="ai_recommendation" :value="result?.recommendation || ''">
+                <input type="hidden" name="ai_notes" :value="result?.notes || ''">
+
+                {{-- Tombol Analisis AI --}}
+                <div class="mt-3 flex items-center gap-3">
+                    <button
+                        type="button"
+                        @click="analyze()"
+                        :disabled="loading || complaint.trim().length < 5"
+                        :class="loading || complaint.trim().length < 5 ? 'opacity-50 cursor-not-allowed' : 'hover:shadow-md cursor-pointer'"
+                        class="inline-flex items-center gap-2 bg-[#87A878] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all duration-200 shadow-sm"
+                    >
+                        <span x-show="!loading">🔍</span>
+                        <svg x-show="loading" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                        </svg>
+                        <span x-text="loading ? 'Menganalisis...' : 'Analisis Keluhan dengan AI'">Analisis Keluhan dengan AI</span>
+                    </button>
+                    <p class="text-xs text-gray-400" x-show="complaint.trim().length < 5 && complaint.trim().length > 0">
+                        Minimal 5 karakter.
+                    </p>
+                </div>
+
+                {{-- Error State --}}
+                <div x-show="error" x-transition class="mt-4 bg-red-50 border border-red-200 rounded-xl p-4">
+                    <p class="text-sm text-red-700" x-text="error"></p>
+                </div>
+
+                {{-- Card Hasil Analisis AI --}}
+                <div x-show="result" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4">
+                    <div class="rounded-2xl border border-[#c8dfc0] bg-gradient-to-br from-[#f5f9f4] to-[#eef5ec] p-5 shadow-sm">
+                        {{-- Header --}}
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="text-lg">🤖</span>
+                            <h4 class="text-sm font-bold text-[#4a7a42]">Hasil Analisis AI</h4>
+                            <span class="ml-auto text-xs text-gray-400">Powered by Gemini</span>
+                        </div>
+
+                        {{-- Urgency Badge --}}
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Urgensi:</span>
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold"
+                                :class="{
+                                    'bg-green-100 text-green-800': result?.urgency?.toLowerCase().includes('rendah'),
+                                    'bg-yellow-100 text-yellow-800': result?.urgency?.toLowerCase().includes('sedang'),
+                                    'bg-red-100 text-red-800': result?.urgency?.toLowerCase().includes('tinggi')
+                                }"
+                                x-text="result?.urgency || '-'"
+                            ></span>
+                        </div>
+
+                        {{-- Recommendation --}}
+                        <div class="mb-3" x-show="result?.recommendation">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Rekomendasi:</p>
+                            <p class="text-sm text-gray-700 leading-relaxed" x-text="result?.recommendation"></p>
+                        </div>
+
+                        {{-- Notes --}}
+                        <div x-show="result?.notes">
+                            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Catatan:</p>
+                            <p class="text-sm text-gray-600 italic leading-relaxed" x-text="result?.notes"></p>
+                        </div>
+
+                        <p class="text-xs text-gray-400 mt-4 border-t border-[#c8dfc0] pt-3">
+                            ℹ️ Hasil ini bersifat saran awal. Keputusan akhir tetap di tangan tenaga medis profesional.
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <div class="pt-4 border-t border-gray-200 flex justify-end">
-                <button type="submit" class="bg-sage hover-bg-sage text-white px-6 py-2 rounded-md text-sm font-medium transition shadow-sm">
+                <button type="submit" class="bg-[#87A878] hover:bg-[#6e8e62] cursor-pointer text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow-md">
                     Buat Jadwal
                 </button>
             </div>
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('triageAnalyzer', () => ({
+            complaint: '',
+            loading: false,
+            result: null,
+            error: null,
+
+            init() {
+                // Sync model dengan nilai textarea awal (old input dari Laravel)
+                const ta = document.getElementById('complaint_summary');
+                if (ta && ta.value) this.complaint = ta.value;
+            },
+
+            async analyze() {
+                if (this.complaint.trim().length < 5) return;
+
+                this.loading = true;
+                this.result  = null;
+                this.error   = null;
+
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+                try {
+                    const response = await fetch('{{ route('booking.triage') }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({ complaint: this.complaint }),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || 'Terjadi kesalahan pada server.');
+                    }
+
+                    this.result = data;
+                } catch (e) {
+                    this.error = '❌ ' + (e.message ?? 'Gagal menghubungi AI. Silakan coba lagi.');
+                } finally {
+                    this.loading = false;
+                }
+            },
+        }));
+    });
+</script>
+@endpush
 @endsection

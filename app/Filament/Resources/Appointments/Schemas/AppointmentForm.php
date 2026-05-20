@@ -3,15 +3,22 @@
 namespace App\Filament\Resources\Appointments\Schemas;
 
 use App\Models\Appointment;
+use App\Services\GeminiService;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Placeholder;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Actions;
+use Filament\Actions\Action as FormAction;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
+use Illuminate\Support\HtmlString;
 
 class AppointmentForm
 {
@@ -55,7 +62,76 @@ class AppointmentForm
                                     ->label('Ringkasan Keluhan')
                                     ->rows(3)
                                     ->columnSpanFull(),
+
+                                // ─── Tombol Analisis AI ─────────────────────────────
+                                Actions::make([
+                                    FormAction::make('analyzeComplaint')
+                                        ->label('🔍 Analisis Keluhan dengan AI')
+                                        ->color('success')
+                                        ->requiresConfirmation()
+                                        ->modalHeading('Analisis Keluhan dengan Gemini AI')
+                                        ->modalDescription('AI akan menganalisis keluhan pasien dan memberikan rekomendasi urgensi serta rute kunjungan. Lanjutkan?')
+                                        ->modalSubmitActionLabel('Ya, Analisis Sekarang')
+                                        ->action(function (Get $get, Set $set) {
+                                            $complaint = $get('complaint_summary');
+
+                                            if (blank($complaint)) {
+                                                Notification::make()
+                                                    ->title('Keluhan kosong')
+                                                    ->body('Silakan isi ringkasan keluhan terlebih dahulu.')
+                                                    ->warning()
+                                                    ->send();
+                                                return;
+                                            }
+
+                                            try {
+                                                /** @var GeminiService $gemini */
+                                                $gemini = app(GeminiService::class);
+                                                $result = $gemini->analyzeComplaint($complaint);
+
+                                                $set('ai_urgency',        $result['urgency']        ?? '');
+                                                $set('ai_recommendation', $result['recommendation'] ?? '');
+                                                $set('ai_notes',          $result['notes']          ?? '');
+
+                                                Notification::make()
+                                                    ->title('✅ Analisis selesai')
+                                                    ->body('Hasil analisis AI telah diisi. Simpan appointment untuk menyimpan hasilnya.')
+                                                    ->success()
+                                                    ->send();
+                                            } catch (\Throwable $e) {
+                                                Notification::make()
+                                                    ->title('❌ Gagal menghubungi AI')
+                                                    ->body('Error: ' . $e->getMessage())
+                                                    ->danger()
+                                                    ->send();
+                                            }
+                                        }),
+                                ])->columnSpanFull(),
                             ]),
+
+                        // ─── Hasil Analisis AI ───────────────────────────────────
+                        Section::make('🤖 Hasil Analisis AI (Triage)')
+                            ->description('Diisi otomatis oleh Gemini AI saat tombol "Analisis Keluhan" ditekan.')
+                            ->schema([
+                                Select::make('ai_urgency')
+                                    ->label('Tingkat Urgensi')
+                                    ->options([
+                                        'rendah' => '🟢 Rendah',
+                                        'sedang' => '🟡 Sedang',
+                                        'tinggi' => '🔴 Tinggi',
+                                    ])
+                                    ->native(false),
+                                Textarea::make('ai_recommendation')
+                                    ->label('Rekomendasi Kunjungan')
+                                    ->rows(3)
+                                    ->columnSpanFull(),
+                                Textarea::make('ai_notes')
+                                    ->label('Catatan Tambahan untuk Terapis')
+                                    ->rows(2)
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(2)
+                            ->collapsed(),
                     ])
                     ->columnSpan(['lg' => 2]),
 
@@ -66,10 +142,10 @@ class AppointmentForm
                                 Select::make('status')
                                     ->label('Status')
                                     ->options([
-                                        Appointment::STATUS_SCHEDULED => 'Terjadwal',
+                                        Appointment::STATUS_SCHEDULED   => 'Terjadwal',
                                         Appointment::STATUS_IN_PROGRESS => 'Sedang Berlangsung',
-                                        Appointment::STATUS_COMPLETED => 'Selesai',
-                                        Appointment::STATUS_CANCELLED => 'Dibatalkan',
+                                        Appointment::STATUS_COMPLETED   => 'Selesai',
+                                        Appointment::STATUS_CANCELLED   => 'Dibatalkan',
                                     ])
                                     ->required()
                                     ->default(Appointment::STATUS_SCHEDULED),
@@ -77,7 +153,7 @@ class AppointmentForm
                                 Select::make('service_location_type')
                                     ->label('Tipe Lokasi')
                                     ->options([
-                                        Appointment::LOCATION_CLINIC => 'Klinik',
+                                        Appointment::LOCATION_CLINIC   => 'Klinik',
                                         Appointment::LOCATION_HOMECARE => 'Homecare',
                                     ])
                                     ->required()
