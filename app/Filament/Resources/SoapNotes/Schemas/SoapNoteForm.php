@@ -23,8 +23,8 @@ class SoapNoteForm
             ->components([
                 Select::make('appointment_id')
                     ->label('Kunjungan (Pasien & Tanggal)')
-                    ->relationship('appointment', 'id')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->patient->user->name} - {$record->scheduled_at->format('d M Y H:i')}")
+                    ->getSearchResultsUsing(fn (string $search): array => \App\Models\Appointment::with(['patient.user'])->whereHas('patient.user', fn ($query) => $query->where('name', 'ilike', "%{$search}%"))->limit(50)->get()->mapWithKeys(fn ($record) => [$record->id => "{$record->patient?->user?->name} - {$record->scheduled_at->format('d M Y H:i')}"])->toArray())
+                    ->getOptionLabelUsing(fn ($value): ?string => (($record = \App\Models\Appointment::with('patient.user')->find($value)) ? "{$record->patient?->user?->name} - {$record->scheduled_at->format('d M Y H:i')}" : null))
                     ->required()
                     ->searchable()
                     ->columnSpanFull(),

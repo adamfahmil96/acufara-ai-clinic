@@ -30,7 +30,8 @@ class AppointmentForm
                                     ->searchable(),
                                 Select::make('patient_id')
                                     ->label('Pasien')
-                                    ->relationship('patient.user', 'name')
+                                    ->getSearchResultsUsing(fn (string $search): array => \App\Models\Patient::whereHas('user', fn ($query) => $query->where('name', 'ilike', "%{$search}%"))->limit(50)->get()->mapWithKeys(fn ($patient) => [$patient->id => $patient->user?->name])->toArray())
+                                    ->getOptionLabelUsing(fn ($value): ?string => \App\Models\Patient::find($value)?->user?->name)
                                     ->required()
                                     ->searchable(),
                                 Select::make('service_id')
