@@ -65,7 +65,6 @@ class BranchResource extends Resource
                     ->numeric()
                     ->placeholder('-7.5666')
                     ->live(debounce: 800)
-                    ->extraAttributes(['x-on:set-branch-lat.window' => '$el.value = $event.detail; $el.dispatchEvent(new Event("input"))'])
                     ->step(0.00000001),
 
                 TextInput::make('lng')
@@ -73,7 +72,6 @@ class BranchResource extends Resource
                     ->numeric()
                     ->placeholder('110.8166')
                     ->live(debounce: 800)
-                    ->extraAttributes(['x-on:set-branch-lng.window' => '$el.value = $event.detail; $el.dispatchEvent(new Event("input"))'])
                     ->step(0.00000001),
 
                 // ─── Tombol Geocode ──────────────────────────────────────────
@@ -117,13 +115,18 @@ class BranchResource extends Resource
 
                 // ─── Peta Interaktif ─────────────────────────────────────────
                 \Filament\Schemas\Components\View::make('filament.forms.components.branch-map')
-                    ->viewData(function (Get $get) {
+                    ->viewData(function (Get $get, $record) {
+                        $lat = $get('lat');
+                        $lng = $get('lng');
+                        // Fallback ke data record jika form state kosong (saat pertama load)
+                        if (!$lat && $record) {
+                            $lat = $record->lat;
+                            $lng = $record->lng;
+                        }
                         return [
-                            'lat'         => $get('lat'),
-                            'lng'         => $get('lng'),
-                            'mapId'       => 'branch-map-' . (request()->route('record') ?? 'new'),
-                            'latStateKey' => 'lat',
-                            'lngStateKey' => 'lng',
+                            'lat'   => $lat,
+                            'lng'   => $lng,
+                            'mapId' => 'branch-map-' . ($record?->id ?? 'new'),
                         ];
                     })
                     ->columnSpanFull(),

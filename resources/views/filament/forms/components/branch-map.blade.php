@@ -1,102 +1,137 @@
 {{-- Interactive Leaflet Map for Branch Form --}}
-{{-- Expects: $lat, $lng, $mapId, $latStateKey, $lngStateKey --}}
+{{-- Expects: $lat, $lng, $mapId --}}
+@php
+    $safeLat  = is_numeric($lat)  ? (float) $lat  : -7.5666;
+    $safeLng  = is_numeric($lng)  ? (float) $lng  : 110.8166;
+@endphp
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<div
+<div style="width:100%"
     x-data="{
+        lat: {{ $safeLat }},
+        lng: {{ $safeLng }},
         map: null,
         marker: null,
-        lat: {{ $lat ?? -7.5666 }},
-        lng: {{ $lng ?? 110.8166 }},
-        mapId: '{{ $mapId }}',
-        latKey: '{{ $latStateKey }}',
-        lngKey: '{{ $lngStateKey }}',
-
         init() {
-            this.$nextTick(() => {
+            this.loadLeaflet().then(() => {
                 this.initMap();
-
-                // Listen for changes from Filament form fields (when user types)
-                Livewire.on('branch-coords-update', ({ lat, lng }) => {
-                    if (lat && lng) {
-                        this.lat = parseFloat(lat);
-                        this.lng = parseFloat(lng);
-                        this.moveMarker(this.lat, this.lng);
+            });
+            
+            // Watch jika server (Livewire) mengubah state lat/lng (misal via Geocode otomatis)
+            this.$watch('lat', (value) => {
+                if (this.map && this.marker) {
+                    let current = this.marker.getLatLng();
+                    if (current.lat !== parseFloat(value)) {
+                        this.marker.setLatLng([value, this.lng]);
+                        this.map.setView([value, this.lng]);
                     }
-                });
+                }
+            });
+            
+            this.$watch('lng', (value) => {
+                if (this.map && this.marker) {
+                    let current = this.marker.getLatLng();
+                    if (current.lng !== parseFloat(value)) {
+                        this.marker.setLatLng([this.lat, value]);
+                        this.map.setView([this.lat, value]);
+                    }
+                }
             });
         },
-
+        loadLeaflet() {
+            return new Promise((resolve) => {
+                if (window.L) {
+                    resolve();
+                    return;
+                }
+                
+                let css = document.createElement('link');
+                css.rel = 'stylesheet';
+                css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+                document.head.appendChild(css);
+                
+                let script = document.createElement('script');
+                script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                script.onload = () => resolve();
+                document.head.appendChild(script);
+            });
+        },
         initMap() {
+            let container = this.$refs.map;
+            
+            // Mencegah error 'Map container is already initialized' 
+            // jika Alpine re-initialize tapi DOM dipertahankan Livewire
             if (this.map) {
                 this.map.remove();
                 this.map = null;
             }
-
-            this.map = L.map(this.mapId).setView([this.lat, this.lng], 13);
-
+            if (container && container._leaflet_id) {
+                container._leaflet_id = null;
+                container.innerHTML = '';
+            }
+            
+            this.map = L.map(container).setView([this.lat, this.lng], 14);
+            
+            // Tambahkan filter gelap untuk map di dark mode
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'
+                attribution: '&copy; OpenStreetMap',
+                className: 'map-tiles'
             }).addTo(this.map);
 
-            // Red icon for branch
-            const redIcon = L.divIcon({
-                className: '',
-                html: `<div style=\"
-                    width: 24px; height: 24px;
-                    background: #ef4444;
-                    border: 3px solid white;
-                    border-radius: 50% 50% 50% 0;
-                    transform: rotate(-45deg);
-                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
-                \"></div>`,
-                iconSize: [24, 24],
-                iconAnchor: [12, 24],
-            });
+            this.marker = L.marker([this.lat, this.lng], { draggable: true })
+                .addTo(this.map)
+                .bindPopup('<b>Lokasi Cabang</b><br>Geser atau klik peta untuk mengubah posisi.');
 
-            this.marker = L.marker([this.lat, this.lng], {
-                draggable: true,
-                icon: redIcon
-            }).addTo(this.map).bindPopup('<b>Lokasi Cabang</b><br>Geser untuk menyesuaikan posisi.').openPopup();
-
-            // When user drags the marker, update Filament form fields
             this.marker.on('dragend', (e) => {
-                const pos = e.target.getLatLng();
-                this.lat = parseFloat(pos.lat.toFixed(8));
-                this.lng = parseFloat(pos.lng.toFixed(8));
-                this.$dispatch('set-branch-lat', this.lat);
-                this.$dispatch('set-branch-lng', this.lng);
+                let pos = e.target.getLatLng();
+                this.updateForm(pos.lat, pos.lng);
             });
 
-            // When user clicks on map, move marker there
             this.map.on('click', (e) => {
-                this.lat = parseFloat(e.latlng.lat.toFixed(8));
-                this.lng = parseFloat(e.latlng.lng.toFixed(8));
-                this.moveMarker(this.lat, this.lng);
-                this.$dispatch('set-branch-lat', this.lat);
-                this.$dispatch('set-branch-lng', this.lng);
+                this.marker.setLatLng(e.latlng);
+                this.updateForm(e.latlng.lat, e.latlng.lng);
             });
 
-            setTimeout(() => this.map.invalidateSize(), 400);
+            // Perbaiki issue ukuran map saat diload dalam modal Filament
+            let invalidate = () => {
+                if (this.map) this.map.invalidateSize();
+            };
+            setTimeout(invalidate, 100);
+            setTimeout(invalidate, 500);
+            setTimeout(invalidate, 1000);
+            setTimeout(invalidate, 2000);
         },
-
-        moveMarker(lat, lng) {
-            if (this.marker) {
-                this.marker.setLatLng([lat, lng]);
-                this.map.setView([lat, lng], this.map.getZoom());
+        updateForm(lat, lng) {
+            this.lat = lat;
+            this.lng = lng;
+            
+            // Cari input berdasarkan placeholder karena ID dinamis di Filament
+            let latInput = document.querySelector('input[placeholder=&quot;-7.5666&quot;]');
+            let lngInput = document.querySelector('input[placeholder=&quot;110.8166&quot;]');
+            
+            if (latInput) {
+                latInput.value = parseFloat(lat).toFixed(8);
+                latInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+            if (lngInput) {
+                lngInput.value = parseFloat(lng).toFixed(8);
+                lngInput.dispatchEvent(new Event('input', { bubbles: true }));
             }
         }
     }"
-    id="{{ $mapId }}-wrapper"
-    style="width: 100%"
 >
+    <style>
+        /* Dukungan dark mode untuk tiles map */
+        .fi-theme-dark .map-tiles {
+            filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3) brightness(0.7);
+        }
+    </style>
+    <!-- Tambahkan wire:ignore agar Livewire tidak menimpa elemen DOM Leaflet -->
     <div
-        id="{{ $mapId }}"
-        style="width: 100%; height: 350px; border-radius: 0.5rem; overflow: hidden; border: 1px solid #374151; z-index: 0; position: relative;"
+        wire:ignore
+        x-ref="map"
+        style="width:100%; height:350px; border-radius:0.5rem; border:1px solid #374151; position:relative; z-index:10;"
     ></div>
-    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1.5">
-        💡 Klik di peta atau geser marker merah untuk menyesuaikan posisi cabang secara manual.
+    <p style="font-size:0.75rem; color:#6b7280; margin-top:0.375rem;">
+        💡 Klik di peta atau geser marker untuk menyesuaikan posisi cabang secara manual.
     </p>
 </div>
