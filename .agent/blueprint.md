@@ -78,7 +78,9 @@ Nama Database Lokal: `acufara_db`
 
 ### 4.1 Tabel Organisasi, Autentikasi & CMS
 
-1. `branches`: `id`, `nama_cabang`, `alamat`, `is_active`, `timestamps`, `deleted_at`.
+1. `branches`: `id`, `nama_cabang`, `alamat`, `lat` (decimal, 10,8), `lng` (decimal, 11,8), `is_active`, `timestamps`, `deleted_at`.
+   - Koordinat `lat` & `lng` diisi otomatis via geocoding OSM (Nominatim) saat alamat disimpan.
+   - Admin bisa mengedit koordinat secara manual lewat form interaktif dengan peta Leaflet.
 
 2. `users`:
     - `id`, `name`, `whatsapp_number` (unique), `email` (nullable), `password` (nullable), `branch_id` (nullable).

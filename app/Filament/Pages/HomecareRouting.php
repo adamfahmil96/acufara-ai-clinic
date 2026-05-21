@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Appointment;
+use App\Models\Branch;
 use App\Services\GeminiService;
 use BackedEnum;
 use Carbon\Carbon;
@@ -52,11 +53,20 @@ class HomecareRouting extends Page implements HasTable
 
         $locations = [];
         
-        // Asumsi titik start Klinik (Cabang Utama)
+        // Gunakan koordinat Cabang Utama sebagai titik start (yang pertama aktif dengan koordinat)
+        $branch = Branch::where('is_active', true)
+            ->whereNotNull('lat')
+            ->whereNotNull('lng')
+            ->first();
+
+        $branchLat  = $branch ? (float) $branch->lat  : -7.5666;
+        $branchLng  = $branch ? (float) $branch->lng  : 110.8166;
+        $branchName = $branch ? $branch->nama_cabang  : 'Klinik Utama';
+        
         $locations[] = [
-            'name'      => 'Klinik Utama',
-            'lat'       => -7.5666, // Default Surakarta / Karanganyar border lat
-            'lng'       => 110.8166, // Default lng
+            'name'      => $branchName,
+            'lat'       => $branchLat,
+            'lng'       => $branchLng,
             'is_branch' => true,
         ];
 
@@ -64,10 +74,9 @@ class HomecareRouting extends Page implements HasTable
             $patientName = $apt->patient->user->name ?? 'Pasien ' . ($idx + 1);
             $time        = Carbon::parse($apt->scheduled_at)->format('H:i');
             
-            // Jika lat/lng kosong di database, berikan koordinat acak di sekitar klinik untuk keperluan demo visual.
-            // Di production, field lat & lng ini seharusnya diisi saat pasien menentukan alamat.
-            $lat = $apt->lat ?? (-7.5666 + (mt_rand(-50, 50) / 1000));
-            $lng = $apt->lng ?? (110.8166 + (mt_rand(-50, 50) / 1000));
+            // Jika lat/lng kosong di database, gunakan koordinat acak di radius cabang utama untuk demo visual.
+            $lat = $apt->lat ?? ($branchLat + (mt_rand(-50, 50) / 1000));
+            $lng = $apt->lng ?? ($branchLng + (mt_rand(-50, 50) / 1000));
             
             $locations[] = [
                 'name'      => "{$patientName} ({$time})",

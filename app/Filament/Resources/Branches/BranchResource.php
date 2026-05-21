@@ -4,15 +4,21 @@ namespace App\Filament\Resources\Branches;
 
 use App\Filament\Resources\Branches\Pages\ManageBranches;
 use App\Models\Branch;
+use App\Services\GeocodeService;
 use BackedEnum;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Schemas\Components\Actions as FormActions;
+use Filament\Actions\Action as FormAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
@@ -43,15 +49,89 @@ class BranchResource extends Resource
                 TextInput::make('nama_cabang')
                     ->label('Nama Cabang')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpan(2),
+
                 Textarea::make('alamat')
                     ->label('Alamat')
                     ->required()
-                    ->rows(4)
+                    ->rows(3)
+                    ->live(debounce: 1500)
                     ->columnSpanFull(),
+
+                // ─── Koordinat ───────────────────────────────────────────────
+                TextInput::make('lat')
+                    ->label('Latitude')
+                    ->numeric()
+                    ->placeholder('-7.5666')
+                    ->live(debounce: 800)
+                    ->extraAttributes(['x-on:set-branch-lat.window' => '$el.value = $event.detail; $el.dispatchEvent(new Event("input"))'])
+                    ->step(0.00000001),
+
+                TextInput::make('lng')
+                    ->label('Longitude')
+                    ->numeric()
+                    ->placeholder('110.8166')
+                    ->live(debounce: 800)
+                    ->extraAttributes(['x-on:set-branch-lng.window' => '$el.value = $event.detail; $el.dispatchEvent(new Event("input"))'])
+                    ->step(0.00000001),
+
+                // ─── Tombol Geocode ──────────────────────────────────────────
+                FormActions::make([
+                    FormAction::make('geocodeAddress')
+                        ->label('📍 Geocode Alamat Otomatis')
+                        ->color('info')
+                        ->icon('heroicon-o-map-pin')
+                        ->action(function (Get $get, Set $set) {
+                            $alamat = $get('alamat');
+                            if (blank($alamat)) {
+                                Notification::make()
+                                    ->title('Alamat kosong')
+                                    ->body('Isi kolom Alamat terlebih dahulu.')
+                                    ->warning()
+                                    ->send();
+                                return;
+                            }
+
+                            $geocode = app(GeocodeService::class);
+                            $coords  = $geocode->geocode($alamat);
+
+                            if ($coords['lat'] && $coords['lng']) {
+                                $set('lat', $coords['lat']);
+                                $set('lng', $coords['lng']);
+
+                                Notification::make()
+                                    ->title('✅ Koordinat ditemukan')
+                                    ->body('Lat: ' . $coords['lat'] . ', Lng: ' . $coords['lng'])
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('❌ Gagal menemukan koordinat')
+                                    ->body('Coba persingkat alamat (misal: nama kota/kecamatan saja).')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+                ])->columnSpanFull(),
+
+                // ─── Peta Interaktif ─────────────────────────────────────────
+                \Filament\Schemas\Components\View::make('filament.forms.components.branch-map')
+                    ->viewData(function (Get $get) {
+                        return [
+                            'lat'         => $get('lat'),
+                            'lng'         => $get('lng'),
+                            'mapId'       => 'branch-map-' . (request()->route('record') ?? 'new'),
+                            'latStateKey' => 'lat',
+                            'lngStateKey' => 'lng',
+                        ];
+                    })
+                    ->columnSpanFull(),
+
                 Toggle::make('is_active')
                     ->label('Aktif')
-                    ->default(true),
+                    ->default(true)
+                    ->columnSpanFull(),
             ])
             ->columns(2);
     }

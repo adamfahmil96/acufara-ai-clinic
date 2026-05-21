@@ -236,6 +236,14 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - **AI Integration**: Tombol **"Optimasi Rute & Jadwal"** -> mengirimkan daftar alamat dan jam ke Gemini AI -> Gemini mengembalikan urutan kunjungan yang paling efisien berdasarkan lokasi agar terapis (adik ipar) tidak bolak-balik.
 - **Peta (Opsional)**: Tampilkan integrasi Leaflet/Maps sederhana untuk memvisualisasikan rute jika memungkinkan.
 
+### Langkah 14c — Koordinat & Peta Interaktif Cabang (Branch) `[x]`
+
+- Migration: tambah kolom `lat` dan `lng` (decimal) pada tabel `branches`
+- Model `Branch`: tambah `lat`, `lng` ke `$fillable` dan `booted()` observer untuk auto-geocoding via OSM (Nominatim) saat alamat disimpan
+- **Filament Form** `BranchResource`: tambah input `Latitude`, `Longitude`, tombol **"📍 Geocode Alamat Otomatis"**, dan peta Leaflet interaktif
+- Peta bisa diklik dan marker-nya bisa di-drag untuk mengubah koordinat secara manual
+- Nilai Latitude & Longitude tersinkronisasi dua arah dengan peta secara real-time
+
 ---
 
 ## FASE 5 — Polish, Testing & Deployment
