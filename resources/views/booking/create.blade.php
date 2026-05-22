@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <div class="bg-white rounded-2xl shadow-md px-6 py-8 sm:p-10">
+    <div class="bg-white/80 backdrop-blur-md rounded-[2rem] shadow-soft border border-white px-6 py-8 sm:p-10">
         <div class="mb-8 text-center">
             <h2 class="text-3xl font-extrabold text-gray-900">Buat Jadwal Baru</h2>
             <p class="mt-2 text-sm text-gray-500">
@@ -18,7 +18,7 @@
             </div>
         @endif
 
-        <form action="{{ route('booking.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('booking.store') }}" method="POST" class="space-y-6" x-data="{ submitting: false }" @submit="submitting = true">
             @csrf
 
             {{-- Pilihan Cabang --}}
@@ -157,7 +157,7 @@
 
                 {{-- Card Hasil Analisis AI --}}
                 <div x-show="result" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="mt-4">
-                    <div class="rounded-2xl border border-[#c8dfc0] bg-gradient-to-br from-[#f5f9f4] to-[#eef5ec] p-5 shadow-sm">
+                    <div class="rounded-2xl border border-[#c8dfc0] bg-white/60 backdrop-blur-sm p-5 shadow-soft">
                         {{-- Header --}}
                         <div class="flex items-center gap-2 mb-4">
                             <span class="text-lg">🤖</span>
@@ -199,8 +199,15 @@
             </div>
 
             <div class="pt-4 border-t border-gray-200 flex justify-end">
-                <button type="submit" class="bg-[#87A878] hover:bg-[#6e8e62] cursor-pointer text-white px-6 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm hover:shadow-md">
-                    Buat Jadwal
+                <button type="submit" 
+                        :disabled="submitting"
+                        :class="submitting ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#749566] hover:shadow-lg cursor-pointer'"
+                        class="inline-flex items-center gap-2 bg-[#87A878] text-white px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 shadow-soft">
+                    <svg x-show="submitting" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                    </svg>
+                    <span x-text="submitting ? 'Memproses...' : 'Buat Jadwal'">Buat Jadwal</span>
                 </button>
             </div>
         </form>

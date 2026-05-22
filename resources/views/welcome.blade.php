@@ -17,13 +17,13 @@
                             {{ $settings->get('hero.subtitle', 'Perawatan holistik dengan alur booking yang mudah dan rekam medis digital.') }}
                         </p>
                         <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                            <div class="rounded-md shadow">
-                                <a href="{{ route('booking.create') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-sage hover-bg-sage md:py-4 md:text-lg md:px-10 transition">
+                            <div class="rounded-2xl shadow-soft overflow-hidden">
+                                <a href="{{ route('booking.create') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-white bg-sage hover-bg-sage md:py-4 md:text-lg md:px-10 transition duration-300">
                                     {{ $settings->get('hero.cta_label', 'Booking Sekarang') }}
                                 </a>
                             </div>
                             <div class="mt-3 sm:mt-0 sm:ml-3">
-                                <a href="#layanan" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-sage bg-green-50 hover:bg-green-100 md:py-4 md:text-lg md:px-10 transition">
+                                <a href="#layanan" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-2xl text-sage bg-green-50 hover:bg-green-100 md:py-4 md:text-lg md:px-10 transition duration-300 shadow-sm">
                                     Lihat Layanan
                                 </a>
                             </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
             <!-- Hero Image Placeholder (Acupuncture Theme) -->
-            <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full" src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Acupuncture therapy">
+            <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full lg:rounded-bl-[4rem]" src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Acupuncture therapy">
         </div>
     </div>
 
@@ -55,7 +55,7 @@
                 <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                     @forelse($services as $service)
                         <div class="pt-6">
-                            <div class="flow-root bg-white rounded-lg px-6 pb-8 shadow-sm hover:shadow-md transition duration-300 h-full border-t-4 border-sage">
+                            <div class="flow-root bg-white/80 backdrop-blur-md rounded-3xl px-6 pb-8 shadow-soft hover:shadow-lg transition duration-300 h-full border border-white">
                                 <div class="-mt-6">
                                     <div>
                                         <span class="inline-flex items-center justify-center p-3 bg-sage rounded-md shadow-lg">
@@ -77,7 +77,7 @@
                         <!-- Dummy Services if DB empty -->
                         @foreach(['Akupunktur Estetika', 'Bekam Medik', 'Pijat Refleksi'] as $dummyService)
                         <div class="pt-6">
-                            <div class="flow-root bg-white rounded-lg px-6 pb-8 shadow-sm hover:shadow-md transition duration-300 h-full border-t-4 border-sage">
+                            <div class="flow-root bg-white/80 backdrop-blur-md rounded-3xl px-6 pb-8 shadow-soft hover:shadow-lg transition duration-300 h-full border border-white">
                                 <div class="-mt-6">
                                     <div>
                                         <span class="inline-flex items-center justify-center p-3 bg-sage rounded-md shadow-lg">
@@ -165,11 +165,11 @@
                     @php
                         $imageUrl = $article->getFirstMediaUrl('default') ?: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
                     @endphp
-                    <div class="flex flex-col rounded-lg shadow-sm hover:shadow-md transition overflow-hidden bg-white">
+                    <div class="flex flex-col rounded-3xl shadow-soft hover:shadow-lg transition duration-300 overflow-hidden bg-white/80 backdrop-blur-md border border-white">
                         <div class="flex-shrink-0">
                             <img class="h-48 w-full object-cover" src="{{ $imageUrl }}" alt="{{ $article->title }}">
                         </div>
-                        <div class="flex-1 bg-white p-6 flex flex-col justify-between">
+                        <div class="flex-1 p-6 flex flex-col justify-between">
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-sage">
                                     {{ $article->category ?? 'Edukasi' }}
@@ -197,11 +197,11 @@
                 @empty
                     <!-- Dummy Articles if DB empty -->
                     @foreach(['Manfaat Akupunktur untuk Insomnia', 'Mengenal Terapi Bekam Estetika', 'Pentingnya Keseimbangan Yin dan Yang'] as $dummyTitle)
-                    <div class="flex flex-col rounded-lg shadow-sm hover:shadow-md transition overflow-hidden bg-white">
+                    <div class="flex flex-col rounded-3xl shadow-soft hover:shadow-lg transition duration-300 overflow-hidden bg-white/80 backdrop-blur-md border border-white">
                         <div class="flex-shrink-0">
                             <img class="h-48 w-full object-cover" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="{{ $dummyTitle }}">
                         </div>
-                        <div class="flex-1 bg-white p-6 flex flex-col justify-between">
+                        <div class="flex-1 p-6 flex flex-col justify-between">
                             <div class="flex-1">
                                 <p class="text-sm font-medium text-sage">Artikel Kesehatan</p>
                                 <a href="#" class="block mt-2">
