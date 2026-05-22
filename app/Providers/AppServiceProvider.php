@@ -31,17 +31,36 @@ class AppServiceProvider extends ServiceProvider
                 'keyFilePath' => $config['key_file'] ?? null,
             ]));
 
+            $visibilityHandler = isset($config['visibility_handler']) 
+                ? new $config['visibility_handler']() 
+                : null;
+
             $adapter = new GoogleCloudStorageAdapter(
                 bucket: $storageClient->bucket($config['bucket']),
                 prefix: $config['path_prefix'] ?? '',
+                visibilityHandler: $visibilityHandler,
                 defaultVisibility: $config['visibility'] ?? Visibility::PUBLIC,
             );
 
-            return new FilesystemAdapter(
+            return new class(
                 new FlysystemFilesystem($adapter, $config),
                 $adapter,
-                $config,
-            );
+                $config
+            ) extends FilesystemAdapter {
+                public function url($path)
+                {
+                    $bucket = $this->config['bucket'] ?? '';
+                    $prefix = $this->config['path_prefix'] ?? '';
+                    
+                    $fullPath = ltrim(($prefix ? rtrim($prefix, '/') . '/' : '') . ltrim($path, '/'), '/');
+                    
+                    if (isset($this->config['url'])) {
+                        return rtrim($this->config['url'], '/') . '/' . $fullPath;
+                    }
+                    
+                    return 'https://storage.googleapis.com/' . $bucket . '/' . $fullPath;
+                }
+            };
         });
     }
 }
