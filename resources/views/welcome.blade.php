@@ -5,9 +5,9 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative bg-white overflow-hidden">
+    <div class="relative overflow-hidden bg-transparent">
         <div class="max-w-7xl mx-auto">
-            <div class="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 pt-16 px-4 sm:px-6 lg:px-8">
+            <div class="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 pt-16 px-4 sm:px-6 lg:px-8 bg-transparent">
                 <main class="mt-10 mx-auto max-w-7xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
                     <div class="sm:text-center lg:text-left">
                         <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
@@ -39,7 +39,7 @@
     </div>
 
     <!-- Layanan Section -->
-    <div id="layanan" class="py-16 bg-[var(--color-beige)]">
+    <div id="layanan" class="py-16 bg-transparent">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h2 class="text-base text-sage font-semibold tracking-wide uppercase">Layanan Kami</h2>
@@ -102,7 +102,7 @@
     </div>
 
     <!-- Cara Booking Section -->
-    <div id="cara-booking" class="py-16 bg-white overflow-hidden">
+    <div id="cara-booking" class="py-16 bg-transparent overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16">
                 <h2 class="text-base text-sage font-semibold tracking-wide uppercase">Mudah & Cepat</h2>
@@ -111,40 +111,37 @@
                 </p>
             </div>
             
-            <div class="relative">
-                <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                    <div class="w-full border-t border-gray-200"></div>
-                </div>
-                <div class="relative flex justify-between">
+            <div class="relative mt-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <!-- Step 1 -->
-                    <div class="bg-white px-4 text-center w-1/3">
-                        <span class="h-12 w-12 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-xl ring-8 ring-white">
+                    <div class="bg-white/80 backdrop-blur-md px-6 py-8 text-center rounded-[2rem] shadow-soft border border-white transition-all hover:shadow-lg">
+                        <span class="h-14 w-14 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-2xl shadow-md">
                             1
                         </span>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">Daftar / Login</h3>
-                        <p class="mt-2 text-sm text-gray-500">Cukup gunakan nomor WhatsApp Anda untuk masuk tanpa perlu password.</p>
+                        <h3 class="mt-6 text-xl font-semibold text-gray-900">Daftar / Login</h3>
+                        <p class="mt-3 text-base text-gray-600">Cukup gunakan nomor WhatsApp Anda untuk masuk tanpa perlu password.</p>
                     </div>
                     <!-- Step 2 -->
-                    <div class="bg-white px-4 text-center w-1/3">
-                        <span class="h-12 w-12 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-xl ring-8 ring-white">
+                    <div class="bg-white/80 backdrop-blur-md px-6 py-8 text-center rounded-[2rem] shadow-soft border border-white transition-all hover:shadow-lg">
+                        <span class="h-14 w-14 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-2xl shadow-md">
                             2
                         </span>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">Pilih Jadwal</h3>
-                        <p class="mt-2 text-sm text-gray-500">Pilih layanan, cabang klinik, dan waktu kunjungan (atau *homecare*) sesuai keinginan Anda.</p>
+                        <h3 class="mt-6 text-xl font-semibold text-gray-900">Pilih Jadwal</h3>
+                        <p class="mt-3 text-base text-gray-600">Pilih layanan, cabang klinik, dan waktu kunjungan (atau *homecare*) sesuai keinginan Anda.</p>
                     </div>
                     <!-- Step 3 -->
-                    <div class="bg-white px-4 text-center w-1/3">
-                        <span class="h-12 w-12 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-xl ring-8 ring-white">
+                    <div class="bg-white/80 backdrop-blur-md px-6 py-8 text-center rounded-[2rem] shadow-soft border border-white transition-all hover:shadow-lg">
+                        <span class="h-14 w-14 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-2xl shadow-md">
                             3
                         </span>
-                        <h3 class="mt-4 text-lg font-medium text-gray-900">Selesai</h3>
-                        <p class="mt-2 text-sm text-gray-500">Datang ke klinik sesuai jadwal atau tunggu tim kami tiba di rumah Anda.</p>
+                        <h3 class="mt-6 text-xl font-semibold text-gray-900">Selesai</h3>
+                        <p class="mt-3 text-base text-gray-600">Datang ke klinik sesuai jadwal atau tunggu tim kami tiba di rumah Anda.</p>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-12 text-center">
-                <a href="{{ route('booking.create') }}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-sage hover-bg-sage transition shadow-sm">
+            <div class="mt-16 text-center">
+                <a href="{{ route('booking.create') }}" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-2xl text-white bg-sage hover-bg-sage transition-all duration-300 shadow-soft hover:shadow-lg">
                     Mulai Booking
                 </a>
             </div>
@@ -152,7 +149,7 @@
     </div>
 
     <!-- Artikel Section -->
-    <div id="artikel" class="bg-[var(--color-beige)] pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+    <div id="artikel" class="bg-transparent pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
         <div class="relative max-w-7xl mx-auto">
             <div class="text-center">
                 <h2 class="text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl">Artikel & Tips Kesehatan</h2>
