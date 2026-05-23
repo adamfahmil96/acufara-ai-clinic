@@ -1,34 +1,39 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Login - Acufara AI Clinic')</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
-        /* Custom colors for Sage Green and Beige */
         :root {
-            --color-sage: #9cb4a1;
-            --color-beige: #f5f5dc;
+            --color-sage: #87A878;
+            --color-sage-dark: #6B8F5B;
+            --color-beige: #F5F0E8;
+            --color-card: #eaf4f1;
         }
         body {
-            background-color: var(--color-beige);
+            background-color: white;
+            font-family: 'Inter', system-ui, sans-serif;
         }
+        .font-serif { font-family: 'Playfair Display', Georgia, serif; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans antialiased text-gray-900">
-    
-    <div class="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 class="mt-6 text-center text-3xl font-extrabold" style="color: var(--color-sage);">
-            Acufara Clinic & Spa
-        </h2>
-        <p class="mt-2 text-center text-sm text-gray-600">
-            Klinik Akupunktur & Kecantikan dengan Asisten AI
-        </p>
+<body class="min-h-screen flex flex-col justify-center py-12 px-6 antialiased text-neutral-900">
+
+    <div class="mx-auto w-full max-w-md text-center">
+        <a href="/" class="text-xl font-bold tracking-tight text-neutral-900 hover:text-sage transition-colors">Acufara</a>
+        <p class="mt-2 text-sm text-neutral-500">Klinik Akupunktur & Kecantikan dengan Asisten AI</p>
     </div>
 
-    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 border-t-4" style="border-color: var(--color-sage);">
+    <div class="mt-8 mx-auto w-full max-w-md">
+        <div class="rounded-3xl bg-[var(--color-card)] p-8 sm:p-10">
             @yield('content')
         </div>
     </div>

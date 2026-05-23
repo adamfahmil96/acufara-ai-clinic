@@ -5,214 +5,198 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative overflow-hidden bg-transparent">
-        <div class="max-w-7xl mx-auto">
-            <div class="relative z-10 pb-8 sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32 pt-16 px-4 sm:px-6 lg:px-8 bg-transparent">
-                <main class="mt-10 mx-auto max-w-7xl sm:mt-12 md:mt-16 lg:mt-20 xl:mt-28">
-                    <div class="sm:text-center lg:text-left">
-                        <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
-                            <span class="block xl:inline">{{ $settings->get('hero.title', 'Akupunktur, Bekam, Baby Spa By Acufara') }}</span>
-                        </h1>
-                        <p class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                            {{ $settings->get('hero.subtitle', 'Perawatan holistik dengan alur booking yang mudah dan rekam medis digital.') }}
-                        </p>
-                        <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
-                            <div class="rounded-2xl shadow-soft overflow-hidden">
-                                <a href="{{ route('booking.create') }}" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium text-white bg-sage hover-bg-sage md:py-4 md:text-lg md:px-10 transition duration-300">
-                                    {{ $settings->get('hero.cta_label', 'Booking Sekarang') }}
-                                </a>
-                            </div>
-                            <div class="mt-3 sm:mt-0 sm:ml-3">
-                                <a href="#layanan" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-2xl text-sage bg-green-50 hover:bg-green-100 md:py-4 md:text-lg md:px-10 transition duration-300 shadow-sm">
-                                    Lihat Layanan
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </main>
+    <section class="relative flex flex-1 flex-col items-center overflow-hidden px-6 pt-20 pb-24 sm:pt-28">
+        <div class="mx-auto flex w-full max-w-5xl flex-col items-center text-center">
+            <span class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-sage">Akupunktur · Bekam · Baby Spa</span>
+            <h1 class="mt-5 max-w-4xl font-serif text-5xl leading-[1.05] tracking-tight text-neutral-900 sm:text-7xl">
+                {{ $settings->get('hero.title', 'Akupunktur, Bekam, Baby Spa By Acufara') }}
+            </h1>
+            <p class="mt-6 max-w-xl text-lg leading-relaxed text-neutral-600">
+                {{ $settings->get('hero.subtitle', 'Perawatan holistik dengan alur booking yang mudah dan rekam medis digital.') }}
+            </p>
+            <div class="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
+                <a href="{{ route('booking.create') }}" class="btn-solid">
+                    {{ $settings->get('hero.cta_label', 'Booking Sekarang') }}
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
+                </a>
+                <a href="#layanan" class="btn-outline">Lihat Layanan</a>
+            </div>
+
+            <!-- Hero Image -->
+            <div class="mt-16 w-full">
+                <div class="relative aspect-video w-full overflow-hidden rounded-2xl shadow-[0_30px_80px_-24px_rgba(135,168,120,0.4)] ring-1 ring-black/5">
+                    <img class="h-full w-full object-cover" src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80" alt="Acupuncture therapy at Acufara Clinic">
+                </div>
             </div>
         </div>
-        <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-            <!-- Hero Image Placeholder (Acupuncture Theme) -->
-            <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full lg:rounded-bl-[4rem]" src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Acupuncture therapy">
-        </div>
-    </div>
+    </section>
 
     <!-- Layanan Section -->
-    <div id="layanan" class="py-16 bg-transparent">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <h2 class="text-base text-sage font-semibold tracking-wide uppercase">Layanan Kami</h2>
-                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                    Perawatan Terbaik Untuk Anda
-                </p>
-                <p class="mt-4 max-w-2xl text-xl text-gray-500 mx-auto">
+    <section id="layanan" class="px-6 py-24 sm:py-32">
+        <div class="mx-auto w-full max-w-5xl">
+            <div class="mx-auto max-w-4xl text-center">
+                <span class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-sage">Layanan Kami</span>
+                <h2 class="mt-5 font-serif text-4xl leading-[1.06] tracking-tight text-black sm:text-[56px]">
+                    Perawatan Terbaik Untuk Anda.
+                </h2>
+                <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-neutral-600 sm:text-lg">
                     Kami menyediakan berbagai layanan kesehatan holistik dan kecantikan yang disesuaikan dengan kebutuhan Anda.
                 </p>
             </div>
 
-            <div class="mt-12">
-                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                    @forelse($services as $service)
-                        <div class="pt-6">
-                            <div class="flow-root bg-white/80 backdrop-blur-md rounded-3xl px-6 pb-8 shadow-soft hover:shadow-lg transition duration-300 h-full border border-white">
-                                <div class="-mt-6">
-                                    <div>
-                                        <span class="inline-flex items-center justify-center p-3 bg-sage rounded-md shadow-lg">
-                                            <!-- SVG Icon Placeholder -->
-                                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">{{ $service->name }}</h3>
-                                    <p class="mt-2 text-base text-sage font-bold">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
-                                    <p class="mt-4 text-sm text-gray-500">
-                                        {{ $service->description ?? 'Layanan unggulan dari Acufara Clinic yang ditangani oleh tenaga profesional.' }}
-                                    </p>
-                                </div>
-                            </div>
+            <ul class="mt-14 grid gap-5 sm:mt-20 lg:grid-cols-3 lg:gap-6">
+                @forelse($services as $service)
+                    <li class="group flex flex-col rounded-3xl bg-card p-8 transition-colors hover:bg-[#dceee7] sm:p-9">
+                        <div>
+                            <span class="inline-flex items-center justify-center p-3 bg-sage rounded-xl shadow-md">
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                                </svg>
+                            </span>
                         </div>
-                    @empty
-                        <!-- Dummy Services if DB empty -->
-                        @foreach(['Akupunktur Estetika', 'Bekam Medik', 'Pijat Refleksi'] as $dummyService)
-                        <div class="pt-6">
-                            <div class="flow-root bg-white/80 backdrop-blur-md rounded-3xl px-6 pb-8 shadow-soft hover:shadow-lg transition duration-300 h-full border border-white">
-                                <div class="-mt-6">
-                                    <div>
-                                        <span class="inline-flex items-center justify-center p-3 bg-sage rounded-md shadow-lg">
-                                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <h3 class="mt-8 text-lg font-medium text-gray-900 tracking-tight">{{ $dummyService }}</h3>
-                                    <p class="mt-2 text-base text-sage font-bold">Rp 150.000</p>
-                                    <p class="mt-4 text-sm text-gray-500">
-                                        Perawatan holistik untuk mengembalikan keseimbangan tubuh dan meningkatkan kesehatan secara alami.
-                                    </p>
-                                </div>
-                            </div>
+                        <h3 class="mt-6 font-serif text-[22px] leading-snug tracking-tight text-neutral-900">{{ $service->name }}</h3>
+                        <p class="mt-2 text-sm font-semibold text-sage">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
+                        <p class="mt-3 text-[15px] leading-relaxed text-neutral-600">
+                            {{ $service->description ?? 'Layanan unggulan dari Acufara Clinic yang ditangani oleh tenaga profesional.' }}
+                        </p>
+                        <a href="{{ route('booking.create') }}" class="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-neutral-900 transition-colors hover:text-sage">
+                            Booking layanan ini
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
+                        </a>
+                    </li>
+                @empty
+                    @foreach(['Akupunktur Estetika', 'Bekam Medik', 'Pijat Refleksi'] as $dummyService)
+                    <li class="group flex flex-col rounded-3xl bg-card p-8 transition-colors hover:bg-[#dceee7] sm:p-9">
+                        <div>
+                            <span class="inline-flex items-center justify-center p-3 bg-sage rounded-xl shadow-md">
+                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </span>
                         </div>
-                        @endforeach
-                    @endforelse
-                </div>
-            </div>
+                        <h3 class="mt-6 font-serif text-[22px] leading-snug tracking-tight text-neutral-900">{{ $dummyService }}</h3>
+                        <p class="mt-2 text-sm font-semibold text-sage">Rp 150.000</p>
+                        <p class="mt-3 text-[15px] leading-relaxed text-neutral-600">
+                            Perawatan holistik untuk mengembalikan keseimbangan tubuh dan meningkatkan kesehatan secara alami.
+                        </p>
+                        <a href="{{ route('booking.create') }}" class="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-neutral-900 transition-colors hover:text-sage">
+                            Booking layanan ini
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
+                        </a>
+                    </li>
+                    @endforeach
+                @endforelse
+            </ul>
         </div>
-    </div>
+    </section>
 
     <!-- Cara Booking Section -->
-    <div id="cara-booking" class="py-16 bg-transparent overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-base text-sage font-semibold tracking-wide uppercase">Mudah & Cepat</h2>
-                <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                    3 Langkah Booking Jadwal
-                </p>
+    <section id="cara-booking" class="px-6 py-24 sm:py-32 bg-[var(--color-beige)]">
+        <div class="mx-auto w-full max-w-5xl">
+            <div class="mx-auto max-w-4xl text-center">
+                <span class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-sage">Mudah & Cepat</span>
+                <h2 class="mt-5 font-serif text-4xl leading-[1.06] tracking-tight text-black sm:text-[56px]">
+                    3 Langkah Booking Jadwal.
+                </h2>
             </div>
-            
-            <div class="relative mt-8">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Step 1 -->
-                    <div class="bg-white/80 backdrop-blur-md px-6 py-8 text-center rounded-[2rem] shadow-soft border border-white transition-all hover:shadow-lg">
-                        <span class="h-14 w-14 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-2xl shadow-md">
-                            1
-                        </span>
-                        <h3 class="mt-6 text-xl font-semibold text-gray-900">Daftar / Login</h3>
-                        <p class="mt-3 text-base text-gray-600">Cukup gunakan nomor WhatsApp Anda untuk masuk tanpa perlu password.</p>
-                    </div>
-                    <!-- Step 2 -->
-                    <div class="bg-white/80 backdrop-blur-md px-6 py-8 text-center rounded-[2rem] shadow-soft border border-white transition-all hover:shadow-lg">
-                        <span class="h-14 w-14 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-2xl shadow-md">
-                            2
-                        </span>
-                        <h3 class="mt-6 text-xl font-semibold text-gray-900">Pilih Jadwal</h3>
-                        <p class="mt-3 text-base text-gray-600">Pilih layanan, cabang klinik, dan waktu kunjungan (atau *homecare*) sesuai keinginan Anda.</p>
-                    </div>
-                    <!-- Step 3 -->
-                    <div class="bg-white/80 backdrop-blur-md px-6 py-8 text-center rounded-[2rem] shadow-soft border border-white transition-all hover:shadow-lg">
-                        <span class="h-14 w-14 rounded-full bg-sage flex items-center justify-center mx-auto text-white font-bold text-2xl shadow-md">
-                            3
-                        </span>
-                        <h3 class="mt-6 text-xl font-semibold text-gray-900">Selesai</h3>
-                        <p class="mt-3 text-base text-gray-600">Datang ke klinik sesuai jadwal atau tunggu tim kami tiba di rumah Anda.</p>
-                    </div>
+
+            <div class="mt-14 grid gap-6 sm:mt-20 lg:grid-cols-3 lg:gap-8">
+                <!-- Step 1 -->
+                <div class="relative flex flex-col items-center rounded-3xl bg-white p-8 text-center shadow-soft sm:p-10">
+                    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-sage text-white font-bold text-2xl shadow-md">1</span>
+                    <h3 class="mt-6 font-serif text-xl leading-snug tracking-tight text-neutral-900">Daftar / Login</h3>
+                    <p class="mt-3 text-[15px] leading-relaxed text-neutral-600">Cukup gunakan nomor WhatsApp Anda untuk masuk tanpa perlu password.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="relative flex flex-col items-center rounded-3xl bg-white p-8 text-center shadow-soft sm:p-10">
+                    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-sage text-white font-bold text-2xl shadow-md">2</span>
+                    <h3 class="mt-6 font-serif text-xl leading-snug tracking-tight text-neutral-900">Pilih Jadwal</h3>
+                    <p class="mt-3 text-[15px] leading-relaxed text-neutral-600">Pilih layanan, cabang klinik, dan waktu kunjungan sesuai keinginan Anda.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="relative flex flex-col items-center rounded-3xl bg-white p-8 text-center shadow-soft sm:p-10">
+                    <span class="flex h-14 w-14 items-center justify-center rounded-full bg-sage text-white font-bold text-2xl shadow-md">3</span>
+                    <h3 class="mt-6 font-serif text-xl leading-snug tracking-tight text-neutral-900">Selesai</h3>
+                    <p class="mt-3 text-[15px] leading-relaxed text-neutral-600">Datang ke klinik sesuai jadwal atau tunggu tim kami tiba di rumah Anda.</p>
                 </div>
             </div>
 
             <div class="mt-16 text-center">
-                <a href="{{ route('booking.create') }}" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-2xl text-white bg-sage hover-bg-sage transition-all duration-300 shadow-soft hover:shadow-lg">
+                <a href="{{ route('booking.create') }}" class="btn-solid">
                     Mulai Booking
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
                 </a>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Artikel Section -->
-    <div id="artikel" class="bg-transparent pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
-        <div class="relative max-w-7xl mx-auto">
-            <div class="text-center">
-                <h2 class="text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl">Artikel & Tips Kesehatan</h2>
-                <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+    <section id="artikel" class="px-6 py-24 sm:py-32">
+        <div class="mx-auto w-full max-w-5xl">
+            <div class="mx-auto max-w-4xl text-center">
+                <span class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-sage">Blog & Edukasi</span>
+                <h2 class="mt-5 font-serif text-4xl leading-[1.06] tracking-tight text-black sm:text-[56px]">
+                    Artikel & Tips Kesehatan.
+                </h2>
+                <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-neutral-600 sm:text-lg">
                     Kumpulan informasi bermanfaat dari tim ahli kami.
                 </p>
             </div>
-            <div class="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none">
+
+            <div class="mt-14 grid gap-6 sm:mt-20 lg:grid-cols-3 lg:gap-8">
                 @forelse($articles as $article)
                     @php
                         $imageUrl = $article->getFirstMediaUrl('default') ?: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
                     @endphp
-                    <div class="flex flex-col rounded-3xl shadow-soft hover:shadow-lg transition duration-300 overflow-hidden bg-white/80 backdrop-blur-md border border-white">
-                        <div class="flex-shrink-0">
-                            <img class="h-48 w-full object-cover" src="{{ $imageUrl }}" alt="{{ $article->title }}">
+                    <article class="group flex flex-col overflow-hidden rounded-2xl bg-card transition-colors hover:bg-[#dceee7]">
+                        <div class="aspect-[16/10] overflow-hidden">
+                            <img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" src="{{ $imageUrl }}" alt="{{ $article->title }}">
                         </div>
-                        <div class="flex-1 p-6 flex flex-col justify-between">
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-sage">
-                                    {{ $article->category ?? 'Edukasi' }}
-                                </p>
-                                <a href="#" class="block mt-2">
-                                    <p class="text-xl font-semibold text-gray-900">
-                                        {{ $article->title }}
-                                    </p>
-                                    <p class="mt-3 text-base text-gray-500 line-clamp-3">
-                                        {{ strip_tags($article->content) }}
-                                    </p>
-                                </a>
+                        <div class="flex flex-1 flex-col p-6">
+                            <div class="flex items-center gap-2">
+                                <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-sage">{{ $article->category ?? 'Edukasi' }}</span>
+                                <span class="text-neutral-300">·</span>
+                                <time class="font-mono text-[10px] text-neutral-400" datetime="{{ $article->created_at->format('Y-m-d') }}">{{ $article->created_at->format('d M Y') }}</time>
                             </div>
-                            <div class="mt-6 flex items-center">
-                                <div class="ml-3">
-                                    <div class="flex space-x-1 text-sm text-gray-500">
-                                        <time datetime="{{ $article->created_at->format('Y-m-d') }}">
-                                            {{ $article->created_at->format('d M Y') }}
-                                        </time>
-                                    </div>
-                                </div>
-                            </div>
+                            <h3 class="mt-3 font-serif text-lg leading-snug tracking-tight text-neutral-900">{{ $article->title }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-neutral-600 line-clamp-3">{{ strip_tags($article->content) }}</p>
                         </div>
-                    </div>
+                    </article>
                 @empty
-                    <!-- Dummy Articles if DB empty -->
                     @foreach(['Manfaat Akupunktur untuk Insomnia', 'Mengenal Terapi Bekam Estetika', 'Pentingnya Keseimbangan Yin dan Yang'] as $dummyTitle)
-                    <div class="flex flex-col rounded-3xl shadow-soft hover:shadow-lg transition duration-300 overflow-hidden bg-white/80 backdrop-blur-md border border-white">
-                        <div class="flex-shrink-0">
-                            <img class="h-48 w-full object-cover" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="{{ $dummyTitle }}">
+                    <article class="group flex flex-col overflow-hidden rounded-2xl bg-card transition-colors hover:bg-[#dceee7]">
+                        <div class="aspect-[16/10] overflow-hidden">
+                            <img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="{{ $dummyTitle }}">
                         </div>
-                        <div class="flex-1 p-6 flex flex-col justify-between">
-                            <div class="flex-1">
-                                <p class="text-sm font-medium text-sage">Artikel Kesehatan</p>
-                                <a href="#" class="block mt-2">
-                                    <p class="text-xl font-semibold text-gray-900">{{ $dummyTitle }}</p>
-                                    <p class="mt-3 text-base text-gray-500">
-                                        Membahas secara mendalam tentang manfaat dari terapi tradisional yang didukung oleh pendekatan modern dan AI.
-                                    </p>
-                                </a>
-                            </div>
+                        <div class="flex flex-1 flex-col p-6">
+                            <span class="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-sage">Artikel Kesehatan</span>
+                            <h3 class="mt-3 font-serif text-lg leading-snug tracking-tight text-neutral-900">{{ $dummyTitle }}</h3>
+                            <p class="mt-2 text-sm leading-relaxed text-neutral-600">
+                                Membahas secara mendalam tentang manfaat dari terapi tradisional yang didukung oleh pendekatan modern dan AI.
+                            </p>
                         </div>
-                    </div>
+                    </article>
                     @endforeach
                 @endforelse
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="px-6 py-24 sm:py-32 bg-sage">
+        <div class="mx-auto max-w-3xl text-center">
+            <h2 class="font-serif text-4xl leading-[1.06] tracking-tight text-white sm:text-[56px]">
+                Siap Untuk Perawatan Terbaik?
+            </h2>
+            <p class="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
+                Jadwalkan kunjungan Anda sekarang dan rasakan pengalaman perawatan holistik yang berbeda.
+            </p>
+            <div class="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                <a href="{{ route('booking.create') }}" class="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3 text-sm font-semibold text-sage shadow-[0_4px_14px_-3px_rgba(0,0,0,0.15)] transition hover:bg-neutral-50 hover:-translate-y-0.5">
+                    Booking Sekarang
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
 @endsection

@@ -85,53 +85,94 @@ class AdminPanelProvider extends PanelProvider
                 \Filament\View\PanelsRenderHook::HEAD_END,
                 fn (): string => \Illuminate\Support\Facades\Blade::render('
                     <style>
-                        /* Structural Soft UI Overrides (Apply to both Light and Dark) */
-                        .fi-sidebar {
-                            backdrop-filter: blur(16px);
-                        }
-                        .fi-sidebar-header {
-                            background-color: transparent !important;
-                        }
-                        .fi-topbar {
-                            backdrop-filter: blur(12px);
-                        }
-                        .fi-ta-record, .fi-wi-widget, .fi-fo-component, .fi-modal-window, .fi-fieldset {
-                            border-radius: 1.5rem !important;
-                            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.05) !important;
-                            backdrop-filter: blur(10px);
-                        }
-                        .fi-btn {
+                        /* ===== STRUCTURAL (Both Light & Dark) ===== */
+
+                        /* Rounded cards, widgets, forms */
+                        .fi-section,
+                        .fi-wi-stats-overview-stat,
+                        .fi-wi-widget,
+                        .fi-fo-component-ctn,
+                        .fi-modal-window {
                             border-radius: 1rem !important;
                         }
+
+                        /* Rounded table container */
+                        .fi-ta-ctn {
+                            border-radius: 1rem !important;
+                            overflow: hidden;
+                        }
+
+                        /* Slightly rounded buttons */
+                        .fi-btn {
+                            border-radius: 0.625rem !important;
+                        }
+
+                        /* Active sidebar item → pill shape with Sage Green */
                         .fi-sidebar-item-active > a {
                             background-color: #87A878 !important;
                             color: white !important;
-                            border-radius: 1rem !important;
-                            box-shadow: 0 4px 15px -3px rgba(135,168,120,0.4) !important;
+                            border-radius: 0.625rem !important;
+                            box-shadow: 0 2px 8px -2px rgba(135,168,120,0.35) !important;
                         }
-                        .fi-sidebar-item-active > a span, .fi-sidebar-item-active > a svg {
+                        .fi-sidebar-item-active > a span,
+                        .fi-sidebar-item-active > a svg {
                             color: white !important;
                         }
 
-                        /* Color Overrides (Only for Light Mode) */
+                        /* Navigation group labels → uppercase small */
+                        .fi-sidebar-group-label {
+                            font-size: 0.625rem !important;
+                            text-transform: uppercase !important;
+                            letter-spacing: 0.08em !important;
+                            font-weight: 600 !important;
+                        }
+
+                        /* ===== LIGHT MODE ONLY ===== */
                         html:not(.dark) body.fi-body {
-                            background-color: #F5F0E8 !important; /* Beige background */
+                            background-color: #F7F8FA !important;
                         }
+
+                        /* Sidebar: clean white, no transparency */
                         html:not(.dark) .fi-sidebar {
-                            background-color: rgba(255, 255, 255, 0.5) !important;
-                            border-right: 1px solid rgba(255,255,255,0.6) !important;
+                            background-color: #FFFFFF !important;
+                            border-right: 1px solid #F0F0F0 !important;
                         }
+                        html:not(.dark) .fi-sidebar-header {
+                            background-color: #FFFFFF !important;
+                        }
+
+                        /* Top bar: clean white */
                         html:not(.dark) .fi-topbar {
-                            background-color: rgba(245, 240, 232, 0.7) !important;
-                            border-bottom: 1px solid rgba(255,255,255,0.4) !important;
+                            background-color: #FFFFFF !important;
+                            border-bottom: 1px solid #F0F0F0 !important;
                         }
-                        html:not(.dark) .fi-ta-record, 
-                        html:not(.dark) .fi-wi-widget, 
-                        html:not(.dark) .fi-fo-component, 
-                        html:not(.dark) .fi-modal-window, 
-                        html:not(.dark) .fi-fieldset {
-                            border: 1px solid rgba(255,255,255,0.8) !important;
-                            background-color: rgba(255, 255, 255, 0.8) !important;
+
+                        /* Cards & widgets: white with soft shadow */
+                        html:not(.dark) .fi-section,
+                        html:not(.dark) .fi-ta-ctn {
+                            background-color: #FFFFFF !important;
+                            border: 1px solid #F0F0F0 !important;
+                            box-shadow: 0 1px 3px 0 rgba(0,0,0,0.04) !important;
+                        }
+
+                        /* Stat overview cards: soft pastel green tint */
+                        html:not(.dark) .fi-wi-stats-overview-stat {
+                            background-color: #eaf4f1 !important;
+                            border: 1px solid #d5e8e0 !important;
+                            box-shadow: none !important;
+                        }
+
+                        /* Sidebar hover item */
+                        html:not(.dark) .fi-sidebar-item:not(.fi-sidebar-item-active) > a:hover {
+                            background-color: #F7F8FA !important;
+                            border-radius: 0.625rem !important;
+                        }
+
+                        /* ===== DARK MODE ONLY ===== */
+                        /* Stat cards in dark mode: subtle dark green tint */
+                        html.dark .fi-wi-stats-overview-stat {
+                            background-color: rgba(135,168,120,0.1) !important;
+                            border: 1px solid rgba(135,168,120,0.2) !important;
                         }
                     </style>
                 ')

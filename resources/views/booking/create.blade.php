@@ -3,14 +3,17 @@
 @section('title', 'Buat Jadwal - ' . ($settings->site_name ?? 'Acufara AI Clinic'))
 
 @section('content')
-<div class="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-    <div class="bg-white/80 backdrop-blur-md rounded-[2rem] shadow-soft border border-white px-6 py-8 sm:p-10">
-        <div class="mb-8 text-center">
-            <h2 class="text-3xl font-extrabold text-gray-900">Buat Jadwal Baru</h2>
-            <p class="mt-2 text-sm text-gray-500">
+<section class="px-6 py-16 sm:py-24">
+    <div class="mx-auto max-w-2xl">
+        <div class="text-center mb-10">
+            <span class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-sage">Jadwal Kunjungan</span>
+            <h1 class="mt-4 font-serif text-4xl leading-[1.06] tracking-tight text-black sm:text-5xl">Buat Jadwal Baru</h1>
+            <p class="mt-3 text-base text-neutral-600">
                 Silakan lengkapi formulir di bawah ini untuk mengatur jadwal kunjungan Anda.
             </p>
         </div>
+
+    <div class="rounded-3xl bg-card p-8 sm:p-10">
 
         @if (session('error'))
             <div class="mb-4 bg-red-50 border border-red-200 p-4 rounded-xl">
@@ -212,7 +215,8 @@
             </div>
         </form>
     </div>
-</div>
+    </div>
+</section>
 
 @push('scripts')
 <script>

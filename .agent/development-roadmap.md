@@ -250,7 +250,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 
 > Tujuan: Aplikasi siap demo dan deploy ke Google Cloud Run.
 
-### Langkah 15 — Media & Storage `[ ]`
+### Langkah 15 — Media & Storage `[x]`
 
 - Verifikasi Spatie MediaLibrary berjalan:
   - Upload gambar di `ArticleResource` → tersimpan di `storage/app/public`
@@ -258,7 +258,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - Siapkan konfigurasi GCS di `filesystems.php` (sudah via env, tinggal test switch)
 - Jalankan `php artisan storage:link`
 
-### Langkah 16 — UI Polish & Responsivitas `[ ]`
+### Langkah 16 — UI Polish & Responsivitas `[/]`
 
 - Review landing page di mobile (responsive)
 - Pastikan warna, tipografi, dan komponen konsisten (Sage Green `#87A878`, Beige `#F5F0E8`)
