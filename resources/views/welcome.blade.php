@@ -37,10 +37,10 @@
             <div class="mx-auto max-w-4xl text-center">
                 <span class="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-sage">Layanan Kami</span>
                 <h2 class="mt-5 font-serif text-4xl leading-[1.06] tracking-tight text-black sm:text-[56px]">
-                    Perawatan Terbaik Untuk Anda.
+                    {{ $settings->get('content.about_title', 'Perawatan Terbaik Untuk Anda.') }}
                 </h2>
                 <p class="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-neutral-600 sm:text-lg">
-                    Kami menyediakan berbagai layanan kesehatan holistik dan kecantikan yang disesuaikan dengan kebutuhan Anda.
+                    {{ $settings->get('content.about_body', 'Kami menyediakan berbagai layanan kesehatan holistik dan kecantikan yang disesuaikan dengan kebutuhan Anda.') }}
                 </p>
             </div>
 
