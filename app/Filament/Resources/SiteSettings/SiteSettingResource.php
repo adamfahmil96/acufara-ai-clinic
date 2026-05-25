@@ -69,7 +69,7 @@ class SiteSettingResource extends Resource
                             ->schema([
                                 Placeholder::make('footer_keys')
                                     ->hiddenLabel()
-                                    ->content('footer.address, footer.instagram'),
+                                    ->content('footer.address, footer.instagram, footer.whatsapp, footer.tiktok'),
                             ]),
                         Tab::make('SEO')
                             ->schema([
@@ -163,7 +163,9 @@ class SiteSettingResource extends Resource
             'content.about_title' => 'Konten: About Title',
             'content.about_body' => 'Konten: About Body',
             'footer.address' => 'Footer: Address',
-            'footer.instagram' => 'Footer: Instagram',
+            'footer.instagram' => 'Footer: Instagram URL',
+            'footer.whatsapp' => 'Footer: WhatsApp URL',
+            'footer.tiktok' => 'Footer: TikTok URL',
             'seo.meta_title' => 'SEO: Meta Title',
             'seo.meta_description' => 'SEO: Meta Description',
         ];
