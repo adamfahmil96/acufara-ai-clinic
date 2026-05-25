@@ -282,9 +282,10 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 
 ### Langkah 19 — Deploy ke Google Cloud Run `[ ]`
 
-- Push Docker image ke Google Artifact Registry
+- Tag image: `docker tag acufara:latest adamfahmil96/acufara-ai-clinic:latest`
+- Push Docker image ke Docker Hub (`adamfahmil96/acufara-ai-clinic:latest`)
 - Deploy ke Cloud Run dengan env variables dari Secret Manager
-- Set `FILESYSTEM_DISK=gcs`, `WA_GATEWAY_PROVIDER=fonnte` (jika ada)
+- Set `FILESYSTEM_DISK=gcs`, `FONNTE_TOKEN` (jika ada)
 - Jalankan `php artisan migrate --force` via Cloud Run Job
 - Verifikasi URL produksi live dan semua fitur berfungsi
 
