@@ -18,10 +18,27 @@ class OtpService
         // Generate a random 4-digit OTP
         $otp = str_pad(random_int(0, 9999), 4, '0', STR_PAD_LEFT);
 
-        // Store in cache for 5 minutes
+        // Simpan OTP ke cache selama 5 menit
         Cache::put($this->getCacheKey($waNumber), $otp, now()->addMinutes(5));
 
-        // TODO: Send via Fonnte or other provider here
+        // Mengirim via Fonnte API
+        $token = config('services.fonnte.token');
+        
+        if ($token) {
+            try {
+                \Illuminate\Support\Facades\Http::withHeaders([
+                    'Authorization' => $token
+                ])->post('https://api.fonnte.com/send', [
+                    'target' => $waNumber,
+                    'message' => "Kode OTP Acufara Clinic Anda adalah: *{$otp}*\n\nJangan berikan kode ini kepada siapapun demi keamanan akun Anda.",
+                    'countryCode' => '62',
+                ]);
+            } catch (\Exception $e) {
+                Log::error("❌ [FONNTE] Gagal mengirim OTP ke {$waNumber}: " . $e->getMessage());
+            }
+        }
+
+        // Tetap catat di log untuk memudahkan development & debugging
         $this->sendViaLog($waNumber, $otp);
     }
 
