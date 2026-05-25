@@ -264,6 +264,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - Pastikan warna, tipografi, dan komponen konsisten (Sage Green `#87A878`, Beige `#F5F0E8`)
 - Tambahkan loading states dan feedback toast/notification
 - Pastikan semua label Filament menggunakan Bahasa Indonesia
+- **(NEW) Progressive Web App (PWA):** Tambahkan `manifest.json`, `sw.js`, dan meta tags agar website bisa diinstal ke *home screen* pengguna.
 
 ### Langkah 17 — Optimasi & Security `[x]`
 

@@ -24,6 +24,9 @@ Simple Key-Value settings to manage the landing page and an educational blog to 
 ### Interactive Calendar & Dashboard
 Visual scheduling and multi-tenant operational analytics (Superadmin vs. Branch Admin).
 
+### Progressive Web App (PWA)
+Installable web app experience directly from the browser to your device's home screen, complete with offline caching and native app feel.
+
 ## 🛠️ Tech Stack
 
 - **Backend**: Laravel 13, PHP 8.4

@@ -34,7 +34,7 @@ Anda bertindak sebagai Senior Software Engineer. Tugas Anda adalah membangun sis
 
 - **Frontend Dashboard**: Filament PHP v5 + saade/filament-fullcalendar v4 beta + SpatieMediaLibraryFileUpload.
 
-- **Frontend Landing Page**: Blade Templates + Alpine.js + Tailwind CSS (Palet: Sage Green, Beige).
+- **Frontend Landing Page**: Blade Templates + Alpine.js + Tailwind CSS (Palet: Sage Green, Beige) + **Progressive Web App (PWA)**.
 
 - **AI Integration**: Google Gemini API (Laravel HTTP Client).
 
@@ -166,9 +166,8 @@ GOOGLE_CLOUD_KEY_FILE=
 GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_DEFAULT_MODEL=gemini-1.5-flash
 
-# WHATSAPP OTP CONFIGURATION
-# Gunakan 'log' saat development agar tidak menghabiskan kuota API sungguhan.
-# Ganti menjadi nama provider (misal: 'fonnte') saat rilis produksi.
-WA_GATEWAY_PROVIDER=log
-WA_API_KEY=
+# FONNTE WHATSAPP OTP CONFIGURATION
+# Token Fonnte untuk mengirimkan pesan WhatsApp secara otomatis.
+# Kosongkan jika sedang di local/development agar OTP hanya dicetak di Log.
+FONNTE_TOKEN=
 ```
