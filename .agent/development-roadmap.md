@@ -258,14 +258,14 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - Siapkan konfigurasi GCS di `filesystems.php` (sudah via env, tinggal test switch)
 - Jalankan `php artisan storage:link`
 
-### Langkah 16 — UI Polish & Responsivitas `[/]`
+### Langkah 16 — UI Polish & Responsivitas `[x]`
 
 - Review landing page di mobile (responsive)
 - Pastikan warna, tipografi, dan komponen konsisten (Sage Green `#87A878`, Beige `#F5F0E8`)
 - Tambahkan loading states dan feedback toast/notification
 - Pastikan semua label Filament menggunakan Bahasa Indonesia
 
-### Langkah 17 — Optimasi & Security `[ ]`
+### Langkah 17 — Optimasi & Security `[x]`
 
 - Tambahkan rate limiting di route OTP (max 5 request/menit per IP)
 - Pastikan semua route admin diproteksi middleware auth + permission

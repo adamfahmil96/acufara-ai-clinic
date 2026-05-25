@@ -17,7 +17,9 @@ Route::get('/blog/{article:slug}', [BlogController::class, 'show'])->name('blog.
 // WhatsApp OTP Authentication Routes
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [WhatsAppAuthController::class, 'showLoginForm'])->name('login');
-    Route::post('/login/otp', [WhatsAppAuthController::class, 'requestOtp'])->name('login.otp');
+    Route::post('/login/otp', [WhatsAppAuthController::class, 'requestOtp'])
+        ->name('login.otp')
+        ->middleware('throttle:5,1'); // Limit to 5 requests per minute
     Route::get('/login/verify', [WhatsAppAuthController::class, 'showVerifyForm'])->name('login.verify');
     Route::post('/login/verify', [WhatsAppAuthController::class, 'verifyOtp'])->name('login.verify.post');
 });
