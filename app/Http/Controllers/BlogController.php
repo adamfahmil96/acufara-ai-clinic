@@ -10,7 +10,7 @@ class BlogController extends Controller
 {
     public function index()
     {
-        $settings = SiteSetting::first();
+        $settings = SiteSetting::pluck('setting_value', 'setting_key');
         // Ambil artikel dengan paginasi
         $articles = Article::latest()->paginate(9);
 
@@ -19,7 +19,7 @@ class BlogController extends Controller
 
     public function show(Article $article)
     {
-        $settings = SiteSetting::first();
+        $settings = SiteSetting::pluck('setting_value', 'setting_key');
         return view('blog.show', compact('article', 'settings'));
     }
 }

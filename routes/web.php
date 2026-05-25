@@ -14,6 +14,11 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('/blog/{article:slug}', [BlogController::class, 'show'])->name('blog.show');
 
+// Layanan Routes
+Route::view('/layanan/akupunktur', 'layanan.akupunktur')->name('layanan.akupunktur');
+Route::view('/layanan/bekam', 'layanan.bekam')->name('layanan.bekam');
+Route::view('/layanan/baby-spa', 'layanan.baby-spa')->name('layanan.baby-spa');
+
 // WhatsApp OTP Authentication Routes
 Route::middleware(['guest'])->group(function () {
     Route::get('/login', [WhatsAppAuthController::class, 'showLoginForm'])->name('login');

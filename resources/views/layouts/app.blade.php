@@ -106,7 +106,21 @@
                 <span class="text-xl font-bold tracking-tight text-neutral-900">{{ $siteSettings->get('header.brand_name', 'Acufara') }}</span>
             </a>
             <nav class="hidden items-center gap-8 md:flex" aria-label="Primary">
-                <a href="{{ route('home') }}#layanan" class="text-sm font-medium text-neutral-900 transition-colors hover:text-sage">Layanan</a>
+                <!-- Dropdown Layanan -->
+                <div class="relative" x-data="{ openLayanan: false }" @mouseenter="openLayanan = true" @mouseleave="openLayanan = false">
+                    <button class="flex items-center gap-1 text-sm font-medium text-neutral-900 transition-colors hover:text-sage focus:outline-none">
+                        Layanan
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div x-show="openLayanan" x-transition.opacity.duration.200ms style="display: none;" class="absolute top-full -left-4 w-48 pt-2">
+                        <div class="rounded-xl bg-white p-2 shadow-lg ring-1 ring-black/5">
+                            <a href="{{ route('layanan.akupunktur') }}" class="block rounded-lg px-4 py-2 text-sm text-neutral-700 hover:bg-[#eaf4f1] hover:text-sage transition-colors">Akupunktur</a>
+                            <a href="{{ route('layanan.bekam') }}" class="block rounded-lg px-4 py-2 text-sm text-neutral-700 hover:bg-[#eaf4f1] hover:text-sage transition-colors">Bekam / Cupping</a>
+                            <a href="{{ route('layanan.baby-spa') }}" class="block rounded-lg px-4 py-2 text-sm text-neutral-700 hover:bg-[#eaf4f1] hover:text-sage transition-colors">Baby Spa</a>
+                        </div>
+                    </div>
+                </div>
                 <a href="{{ route('home') }}#cara-booking" class="text-sm font-medium text-neutral-900 transition-colors hover:text-sage">Cara Booking</a>
                 <a href="{{ route('home') }}#artikel" class="text-sm font-medium text-neutral-900 transition-colors hover:text-sage">Artikel</a>
             </nav>
@@ -127,8 +141,18 @@
             </div>
         </div>
         <!-- Mobile Menu -->
-        <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 -translate-y-1" class="md:hidden glass border-t border-white/30 px-6 pb-4 pt-2 flex flex-col gap-3">
-            <a href="{{ route('home') }}#layanan" @click="open=false" class="text-sm font-medium text-neutral-900 py-2 transition-colors hover:text-sage">Layanan</a>
+        <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0 -translate-y-1" class="md:hidden glass border-t border-white/30 px-6 pb-4 pt-2 flex flex-col gap-3" style="display: none;">
+            <div x-data="{ openMobileLayanan: false }">
+                <button @click="openMobileLayanan = !openMobileLayanan" class="flex w-full items-center justify-between py-2 text-sm font-medium text-neutral-900 transition-colors hover:text-sage">
+                    Layanan
+                    <svg :class="{'rotate-180': openMobileLayanan}" class="h-4 w-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div x-show="openMobileLayanan" x-collapse class="pl-4 pr-2 flex flex-col gap-2 mt-1">
+                    <a href="{{ route('layanan.akupunktur') }}" class="py-2 text-sm text-neutral-600 hover:text-sage">Akupunktur</a>
+                    <a href="{{ route('layanan.bekam') }}" class="py-2 text-sm text-neutral-600 hover:text-sage">Bekam / Cupping</a>
+                    <a href="{{ route('layanan.baby-spa') }}" class="py-2 text-sm text-neutral-600 hover:text-sage">Baby Spa</a>
+                </div>
+            </div>
             <a href="{{ route('home') }}#cara-booking" @click="open=false" class="text-sm font-medium text-neutral-900 py-2 transition-colors hover:text-sage">Cara Booking</a>
             <a href="{{ route('home') }}#artikel" @click="open=false" class="text-sm font-medium text-neutral-900 py-2 transition-colors hover:text-sage">Artikel</a>
         </div>

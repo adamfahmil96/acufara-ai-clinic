@@ -45,47 +45,63 @@
             </div>
 
             <ul class="mt-14 grid gap-5 sm:mt-20 lg:grid-cols-3 lg:gap-6">
-                @forelse($services as $service)
-                    <li class="group flex flex-col rounded-3xl bg-card p-8 transition-colors hover:bg-[#dceee7] sm:p-9">
-                        <div>
-                            <span class="inline-flex items-center justify-center p-3 bg-sage rounded-xl shadow-md">
-                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                                </svg>
-                            </span>
-                        </div>
-                        <h3 class="mt-6 font-serif text-[22px] leading-snug tracking-tight text-neutral-900">{{ $service->name }}</h3>
-                        <p class="mt-2 text-sm font-semibold text-sage">Rp {{ number_format($service->price, 0, ',', '.') }}</p>
-                        <p class="mt-3 text-[15px] leading-relaxed text-neutral-600">
-                            {{ $service->description ?? 'Layanan unggulan dari Acufara Clinic yang ditangani oleh tenaga profesional.' }}
-                        </p>
-                        <a href="{{ route('booking.create') }}" class="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-neutral-900 transition-colors hover:text-sage">
-                            Booking layanan ini
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
-                        </a>
-                    </li>
-                @empty
-                    @foreach(['Akupunktur Estetika', 'Bekam Medik', 'Pijat Refleksi'] as $dummyService)
-                    <li class="group flex flex-col rounded-3xl bg-card p-8 transition-colors hover:bg-[#dceee7] sm:p-9">
-                        <div>
-                            <span class="inline-flex items-center justify-center p-3 bg-sage rounded-xl shadow-md">
-                                <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </span>
-                        </div>
-                        <h3 class="mt-6 font-serif text-[22px] leading-snug tracking-tight text-neutral-900">{{ $dummyService }}</h3>
-                        <p class="mt-2 text-sm font-semibold text-sage">Rp 150.000</p>
-                        <p class="mt-3 text-[15px] leading-relaxed text-neutral-600">
-                            Perawatan holistik untuk mengembalikan keseimbangan tubuh dan meningkatkan kesehatan secara alami.
-                        </p>
-                        <a href="{{ route('booking.create') }}" class="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-neutral-900 transition-colors hover:text-sage">
-                            Booking layanan ini
-                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
-                        </a>
-                    </li>
-                    @endforeach
-                @endforelse
+                <!-- Layanan 1: Akupunktur -->
+                <li class="group flex flex-col rounded-3xl bg-card p-8 transition-colors hover:bg-[#dceee7] sm:p-9">
+                    <div>
+                        <span class="inline-flex items-center justify-center p-3 bg-sage rounded-xl shadow-md">
+                            <!-- Needle/Acupuncture Icon -->
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m0-16l-3 3m3-3l3 3m-9 7h12" />
+                            </svg>
+                        </span>
+                    </div>
+                    <h3 class="mt-6 font-serif text-[22px] leading-snug tracking-tight text-neutral-900">Akupunktur Medik</h3>
+                    <p class="mt-3 text-[15px] leading-relaxed text-neutral-600 flex-1">
+                        Integrasi ilmu kedokteran modern sesuai prinsip biomedik dan evidence based medicine untuk mengembalikan keseimbangan tubuh.
+                    </p>
+                    <a href="{{ route('layanan.akupunktur') }}" class="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-sage transition-colors hover:text-sage-dark">
+                        Selengkapnya
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
+                    </a>
+                </li>
+                <!-- Layanan 2: Bekam -->
+                <li class="group flex flex-col rounded-3xl bg-card p-8 transition-colors hover:bg-[#dceee7] sm:p-9">
+                    <div>
+                        <span class="inline-flex items-center justify-center p-3 bg-sage rounded-xl shadow-md">
+                            <!-- Cup Icon -->
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v1a5 5 0 01-5 5H8a5 5 0 01-5-5v-1a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                        </span>
+                    </div>
+                    <h3 class="mt-6 font-serif text-[22px] leading-snug tracking-tight text-neutral-900">Bekam / Cupping</h3>
+                    <p class="mt-3 text-[15px] leading-relaxed text-neutral-600 flex-1">
+                        Metode mengeluarkan darah statis yang mengandung toksin untuk melancarkan peredaran darah dan mengatasi kelelahan.
+                    </p>
+                    <a href="{{ route('layanan.bekam') }}" class="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-sage transition-colors hover:text-sage-dark">
+                        Selengkapnya
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
+                    </a>
+                </li>
+                <!-- Layanan 3: Baby Spa -->
+                <li class="group flex flex-col rounded-3xl bg-card p-8 transition-colors hover:bg-[#dceee7] sm:p-9">
+                    <div>
+                        <span class="inline-flex items-center justify-center p-3 bg-sage rounded-xl shadow-md">
+                            <!-- Face/Smile Icon -->
+                            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </span>
+                    </div>
+                    <h3 class="mt-6 font-serif text-[22px] leading-snug tracking-tight text-neutral-900">Baby Spa</h3>
+                    <p class="mt-3 text-[15px] leading-relaxed text-neutral-600 flex-1">
+                        Perawatan pijat dan hydrotherapy untuk merangsang perkembangan motorik, relaksasi, dan kualitas tidur buah hati Anda.
+                    </p>
+                    <a href="{{ route('layanan.baby-spa') }}" class="mt-5 inline-flex items-center gap-1.5 self-start text-sm font-semibold text-sage transition-colors hover:text-sage-dark">
+                        Selengkapnya
+                        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-x-0.5"><path d="M4 10L10 4M10 4H5M10 4V9"/></svg>
+                    </a>
+                </li>
             </ul>
         </div>
     </section>
@@ -148,7 +164,7 @@
                     @php
                         $imageUrl = $article->getFirstMediaUrl('default') ?: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
                     @endphp
-                    <article class="group flex flex-col overflow-hidden rounded-2xl bg-card transition-colors hover:bg-[#dceee7]">
+                    <a href="{{ route('blog.show', $article->slug) }}" class="group flex flex-col overflow-hidden rounded-2xl bg-card transition-colors hover:bg-[#dceee7]">
                         <div class="aspect-[16/10] overflow-hidden">
                             <img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" src="{{ $imageUrl }}" alt="{{ $article->title }}">
                         </div>
@@ -159,12 +175,12 @@
                                 <time class="font-mono text-[10px] text-neutral-400" datetime="{{ $article->created_at->format('Y-m-d') }}">{{ $article->created_at->format('d M Y') }}</time>
                             </div>
                             <h3 class="mt-3 font-serif text-lg leading-snug tracking-tight text-neutral-900">{{ $article->title }}</h3>
-                            <p class="mt-2 text-sm leading-relaxed text-neutral-600 line-clamp-3">{{ strip_tags($article->content) }}</p>
+                            <p class="mt-2 text-sm leading-relaxed text-neutral-600 line-clamp-3">{{ Str::limit(strip_tags($article->content), 100) }}</p>
                         </div>
-                    </article>
+                    </a>
                 @empty
                     @foreach(['Manfaat Akupunktur untuk Insomnia', 'Mengenal Terapi Bekam Estetika', 'Pentingnya Keseimbangan Yin dan Yang'] as $dummyTitle)
-                    <article class="group flex flex-col overflow-hidden rounded-2xl bg-card transition-colors hover:bg-[#dceee7]">
+                    <a href="#" class="group flex flex-col overflow-hidden rounded-2xl bg-card transition-colors hover:bg-[#dceee7]">
                         <div class="aspect-[16/10] overflow-hidden">
                             <img class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="{{ $dummyTitle }}">
                         </div>
@@ -175,7 +191,7 @@
                                 Membahas secara mendalam tentang manfaat dari terapi tradisional yang didukung oleh pendekatan modern dan AI.
                             </p>
                         </div>
-                    </article>
+                    </a>
                     @endforeach
                 @endforelse
             </div>
