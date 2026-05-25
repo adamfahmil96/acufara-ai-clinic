@@ -48,6 +48,14 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->font('Inter')
             ->sidebarCollapsibleOnDesktop()
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('Log Viewer')
+                    ->url('/log-viewer', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-document-magnifying-glass')
+                    ->group('Akses')
+                    ->sort(100)
+                    ->visible(fn (): bool => auth()->user()?->hasRole('super_admin') ?? false),
+            ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

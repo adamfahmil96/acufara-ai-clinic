@@ -19,6 +19,7 @@ node_modules
 
 # Storage (user uploads — tidak di-bake ke image)
 storage/app/public/*
+storage/app/private/livewire-tmp
 storage/logs/*
 storage/framework/cache/*
 storage/framework/sessions/*

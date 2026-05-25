@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use Google\Cloud\Storage\StorageClient;
 use Illuminate\Filesystem\FilesystemAdapter;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Filesystem as FlysystemFilesystem;
 use League\Flysystem\GoogleCloudStorage\GoogleCloudStorageAdapter;
 use League\Flysystem\Visibility;
+use Opcodes\LogViewer\Facades\LogViewer;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Log Viewer: hanya super_admin yang bisa mengakses
+        LogViewer::auth(function ($request) {
+            return $request->user()?->hasRole('super_admin') ?? false;
+        });
+
         Storage::extend('gcs', function ($app, array $config) {
             $storageClient = new StorageClient(array_filter([
                 'projectId' => $config['project_id'] ?? null,
