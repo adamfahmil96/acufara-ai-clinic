@@ -1,4 +1,4 @@
-const CACHE_NAME = 'acufara-pwa-v1';
+const CACHE_NAME = 'acufara-pwa-v2';
 const URLS_TO_CACHE = [
     '/',
     '/manifest.json',
@@ -13,16 +13,38 @@ self.addEventListener('install', event => {
                 return cache.addAll(URLS_TO_CACHE);
             })
     );
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        })
+    );
+    self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
+    if (event.request.method !== 'GET') return;
+
     event.respondWith(
-        caches.match(event.request)
+        fetch(event.request)
             .then(response => {
-                if (response) {
-                    return response;
-                }
-                return fetch(event.request);
+                const responseClone = response.clone();
+                caches.open(CACHE_NAME).then(cache => {
+                    cache.put(event.request, responseClone);
+                });
+                return response;
+            })
+            .catch(() => {
+                return caches.match(event.request);
             })
     );
 });
