@@ -103,3 +103,31 @@ jobs:
    ```
 3. Buka tab **Actions** di repo GitHub Anda. Anda akan melihat animasi robot sedang bekerja (sekitar 3-5 menit).
 4. Ketika indikator berubah menjadi hijau (Sukses), website Anda yang online sudah otomatis diperbarui! 🚀
+
+---
+
+## 3. Manajemen Variabel Lingkungan (.env) di Cloud Run & CI/CD
+
+Penting untuk dipahami bahwa **file `.env` TIDAK BOLEH di-push ke GitHub atau di-build ke dalam Docker Image** demi keamanan (agar password database atau API key tidak bocor ke publik).
+
+Lalu, bagaimana aplikasi Laravel membaca variabel `.env` saat berada di Cloud Run?
+
+### Mekanisme Cloud Run & Laravel:
+Ketika Laravel berjalan di dalam lingkungan Docker, framework ini secara otomatis akan membaca variabel lingkungan sistem (*System Environment Variables*) OS terlebih dahulu sebelum mencari file `.env` fisik. Di Google Cloud Run, kita menyuntikkan variabel ini langsung ke konfigurasi sistem server, sehingga kita sama sekali **tidak butuh** file `.env` di dalam Docker.
+
+### Tutorial Setup yang Aman (Best Practice):
+
+**1. Setel Variabel Sekali Saja di GCP Web Console**
+Daripada memindahkan file `.env` ke GitHub (yang sangat berisiko), praktik paling aman adalah memasukkannya langsung di server Google:
+- Buka antarmuka Google Cloud Console > menu **Cloud Run**.
+- Klik layanan Anda, lalu tekan tombol **Edit & Deploy New Revision**.
+- Buka tab **Variables & Secrets**.
+- Tambahkan variabel dari `.env` lokal Anda satu per satu (seperti `DB_HOST`, `DB_PASSWORD`, `APP_KEY`, `FONNTE_TOKEN`).
+- Klik **Deploy**.
+
+**2. Biarkan CI/CD Hanya Mengurus Pembaruan Kode**
+- Skrip GitHub Actions (`deploy.yml`) yang kita buat di atas sengaja dirancang **hanya untuk memperbarui *Image* (kode aplikasi)**.
+- Ketika robot GitHub merilis versi terbaru dari kode Anda, **Cloud Run akan secara otomatis mewariskan (*inherit*) seluruh variabel lingkungan yang sudah Anda setel secara manual sebelumnya**.
+- Artinya, Anda tidak perlu mengirim atau mengatur `.env` di dalam GitHub Actions. Cukup atur di Google Cloud satu kali seumur hidup!
+
+*(Catatan: Jika di masa depan Anda menambahkan fitur baru yang membutuhkan variabel `.env` baru, cukup masuk ke Google Cloud Console dan tambahkan variabel tersebut secara manual di tab Variables & Secrets).*
