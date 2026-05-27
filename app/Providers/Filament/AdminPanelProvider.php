@@ -40,7 +40,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->brandName(config('app.name', 'Acufara AI Clinic'))
+            ->brandLogo(asset('images/acufara-header-2.svg'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('images/acufara-title.svg'))
             ->login()
             ->colors([
                 'primary' => '#87A878',

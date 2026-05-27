@@ -27,9 +27,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <!-- PWA -->
+    <link rel="icon" type="image/svg+xml" href="/images/acufara-title.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#87A878">
-    <link rel="apple-touch-icon" href="/pwa-192x192.png">
+    <link rel="apple-touch-icon" href="/images/acufara-icon-app.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="Acufara">
@@ -112,7 +113,7 @@
     <header class="fixed inset-x-0 top-0 z-50 glass" x-data="{ open: false }">
         <div class="mx-auto flex h-16 max-w-5xl items-center justify-between px-6 lg:px-0">
             <a href="{{ route('home') }}" class="inline-flex items-center" aria-label="Acufara">
-                <span class="text-xl font-bold tracking-tight text-neutral-900">{{ $siteSettings->get('header.brand_name', 'Acufara') }}</span>
+                <img src="/images/acufara-header-2.svg" alt="Acufara" class="h-8 w-auto" />
             </a>
             <nav class="hidden items-center gap-8 md:flex" aria-label="Primary">
                 <!-- Dropdown Layanan -->
