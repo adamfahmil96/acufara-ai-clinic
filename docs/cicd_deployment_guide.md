@@ -1,0 +1,133 @@
+# Panduan Update & Rilis Aplikasi (Manual vs CI/CD)
+*Terakhir Diperbarui: Mei 2026*
+
+Dokumen ini menjelaskan dua cara untuk memperbarui aplikasi Acufara AI Clinic ketika Anda membuat perubahan kode di laptop dan ingin mengirimnya ke *live server* di Google Cloud Run.
+
+---
+
+## 1. Pendekatan Manual (Untuk Belajar & Skala Kecil)
+
+Jika Anda belum terbiasa dengan otomatisasi, Anda bisa memperbarui aplikasi secara manual kapan saja Anda selesai mengedit kode.
+
+### Langkah-langkah:
+1. **Rakit Image Baru** di terminal VSCode Anda:
+   ```bash
+   docker build -t adamfahmil96/acufara-ai-clinic:latest .
+   ```
+2. **Kirim (Push) ke Docker Hub**:
+   ```bash
+   docker push adamfahmil96/acufara-ai-clinic:latest
+   ```
+3. **Perbarui Google Cloud Run**:
+   - Buka Google Cloud Console > menu **Cloud Run**.
+   - Klik layanan `acufara-ai-clinic` Anda.
+   - Di bagian atas, klik tombol **Edit & Deploy New Revision**.
+   - Tanpa mengubah settingan apa pun, langsung *scroll* ke bawah dan klik **Deploy**. 
+   - Google Cloud otomatis akan menarik versi `:latest` terbaru dari Docker Hub.
+
+---
+
+## 2. Pendekatan CI/CD Otomatis via GitHub Actions (Praktik Industri Profesional)
+
+Pendekatan ini mengotomatiskan seluruh langkah manual di atas. Anda hanya perlu menekan `git push` ke GitHub, dan robot GitHub yang akan merakit dan merilis aplikasi Anda.
+
+> [!IMPORTANT]
+> **Prasyarat (Lakukan Sekali Saja)**
+> Anda harus menyiapkan 3 kunci rahasia rahasia (*Secrets*) di pengaturan repositori GitHub Anda (**Settings > Secrets and variables > Actions > New repository secret**):
+> 
+> 1. `DOCKERHUB_USERNAME`: Isi dengan `adamfahmil96`
+> 2. `DOCKERHUB_TOKEN`: Buat *Access Token* di pengaturan keamanan akun Docker Hub Anda (jangan gunakan password utama demi keamanan).
+> 3. `GCP_SA_KEY`: Anda harus membuat *Service Account* di Google Cloud Console, berikan izin/Role "Cloud Run Admin" dan "Service Account User", lalu unduh kunci tersebut dalam format JSON. *Copy-paste* seluruh isi file JSON tersebut ke sini. (Catatan: Standar terbaik di 2026 adalah menggunakan *Workload Identity Federation*, namun untuk permulaan, *Service Account JSON Key* adalah yang paling mudah di-setup).
+
+### Konfigurasi GitHub Actions
+
+Buat file baru di proyek Anda dengan path persis seperti ini: `.github/workflows/deploy.yml`. Kemudian isi dengan kode standar industri 2026 berikut:
+
+```yaml
+name: Deploy to Google Cloud Run
+
+# Trigger robot hanya saat ada "git push" ke branch "main" (atau development)
+on:
+  push:
+    branches:
+      - main
+
+# Mendefinisikan lingkungan kerja (menggunakan standar Ubuntu 2026 terbaru)
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Kloning kode sumber dari GitHub ke server robot
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Login ke akun Docker Hub Anda
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 3. Rakit (Build) dan Kirim (Push) image ke Docker Hub
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:latest
+
+      # 4. Otentikasi ke Google Cloud (Standar API V2 2026)
+      - name: Google Auth
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # 5. Rilis (Deploy) ke Cloud Run secara otomatis
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: acufara-ai-clinic      # Sesuaikan dengan nama layanan Anda di GCP
+          region: asia-southeast2         # Region Jakarta
+          image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:latest
+```
+
+### Cara Kerja Setelah Disetel:
+1. Anda membuat fitur baru atau memperbaiki *bug* di laptop.
+2. Anda melakukan komit:
+   ```bash
+   git add .
+   git commit -m "Fix UI Bug"
+   git push origin main
+   ```
+3. Buka tab **Actions** di repo GitHub Anda. Anda akan melihat animasi robot sedang bekerja (sekitar 3-5 menit).
+4. Ketika indikator berubah menjadi hijau (Sukses), website Anda yang online sudah otomatis diperbarui! 🚀
+
+---
+
+## 3. Manajemen Variabel Lingkungan (.env) di Cloud Run & CI/CD
+
+Penting untuk dipahami bahwa **file `.env` TIDAK BOLEH di-push ke GitHub atau di-build ke dalam Docker Image** demi keamanan (agar password database atau API key tidak bocor ke publik).
+
+Lalu, bagaimana aplikasi Laravel membaca variabel `.env` saat berada di Cloud Run?
+
+### Mekanisme Cloud Run & Laravel:
+Ketika Laravel berjalan di dalam lingkungan Docker, framework ini secara otomatis akan membaca variabel lingkungan sistem (*System Environment Variables*) OS terlebih dahulu sebelum mencari file `.env` fisik. Di Google Cloud Run, kita menyuntikkan variabel ini langsung ke konfigurasi sistem server, sehingga kita sama sekali **tidak butuh** file `.env` di dalam Docker.
+
+### Tutorial Setup yang Aman (Best Practice):
+
+**1. Setel Variabel Sekali Saja di GCP Web Console**
+Daripada memindahkan file `.env` ke GitHub (yang sangat berisiko), praktik paling aman adalah memasukkannya langsung di server Google:
+- Buka antarmuka Google Cloud Console > menu **Cloud Run**.
+- Klik layanan Anda, lalu tekan tombol **Edit & Deploy New Revision**.
+- Buka tab **Variables & Secrets**.
+- Tambahkan variabel dari `.env` lokal Anda satu per satu (seperti `DB_HOST`, `DB_PASSWORD`, `APP_KEY`, `FONNTE_TOKEN`).
+- Klik **Deploy**.
+
+**2. Biarkan CI/CD Hanya Mengurus Pembaruan Kode**
+- Skrip GitHub Actions (`deploy.yml`) yang kita buat di atas sengaja dirancang **hanya untuk memperbarui *Image* (kode aplikasi)**.
+- Ketika robot GitHub merilis versi terbaru dari kode Anda, **Cloud Run akan secara otomatis mewariskan (*inherit*) seluruh variabel lingkungan yang sudah Anda setel secara manual sebelumnya**.
+- Artinya, Anda tidak perlu mengirim atau mengatur `.env` di dalam GitHub Actions. Cukup atur di Google Cloud satu kali seumur hidup!
+
+*(Catatan: Jika di masa depan Anda menambahkan fitur baru yang membutuhkan variabel `.env` baru, cukup masuk ke Google Cloud Console dan tambahkan variabel tersebut secara manual di tab Variables & Secrets).*

@@ -1,0 +1,88 @@
+services:
+
+  # ============================================================
+  # App Service (FrankenPHP)
+  # ============================================================
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: acufara_app
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+      - "8443:443"
+      - "8443:443/udp"
+    volumes:
+      # Development: mount source code for hot-reload
+      - .:/app
+      - /app/public/build
+      # Persistent storage for uploaded media
+      - acufara_storage:/app/storage/app/public
+    environment:
+      SERVER_NAME: ":80"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - acufara_network
+
+  # ============================================================
+  # Database Service (PostgreSQL 16)
+  # ============================================================
+  db:
+    image: postgres:16-alpine
+    container_name: acufara_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-acufara_db}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - acufara_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-acufara_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - acufara_network
+
+  # ============================================================
+  # Mailpit (Local Mail Catcher for Development)
+  # ============================================================
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: acufara_mailpit
+    restart: unless-stopped
+    ports:
+      - "8025:8025"   # Web UI
+      - "1025:1025"   # SMTP
+    networks:
+      - acufara_network
+
+# ============================================================
+# Volumes
+# ============================================================
+volumes:
+  acufara_postgres_data:
+    driver: local
+  acufara_storage:
+    driver: local
+
+# ============================================================
+# Networks
+# ============================================================
+networks:
+  acufara_network:
+    driver: bridge

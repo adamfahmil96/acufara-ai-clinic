@@ -1,0 +1,39 @@
+# Development overrides — file ini otomatis di-merge oleh Docker Compose
+# Jangan commit ke production environment
+
+services:
+
+  app:
+    build:
+      target: production  # Gunakan stage yang sama tapi dengan volume mount
+    environment:
+      SERVER_NAME: ":80"
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      # Disable OPcache validate_timestamps agar perubahan kode langsung terlihat
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: "1"
+    volumes:
+      # Hot-reload: source code langsung di-mount ke container
+      - .:/app
+      # Exclude vendor & build artifacts dari mount (pakai anonymous volume)
+      - /app/vendor
+      - /app/public/build
+      - /app/bootstrap/cache
+      - acufara_storage:/app/storage/app/public
+      - ./docker/caddy/Caddyfile.d:/etc/caddy/Caddyfile.d:ro
+    # Override production CMD untuk development
+    command: ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch"]
+
+  db:
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: acufara_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+
+volumes:
+  acufara_storage:
