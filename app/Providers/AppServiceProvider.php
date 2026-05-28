@@ -27,7 +27,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if ($this->app->environment('production')) {
+        // Paksa HTTPS di Production ATAU jika sedang berjalan di Google Cloud Run
+        if ($this->app->environment('production') || env('K_SERVICE')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
