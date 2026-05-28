@@ -22,9 +22,6 @@ services:
       - acufara_storage:/app/storage/app/public
     environment:
       SERVER_NAME: ":80"
-      DB_CONNECTION: pgsql
-      DB_HOST: db
-      DB_PORT: 5432
     env_file:
       - .env
     depends_on:
