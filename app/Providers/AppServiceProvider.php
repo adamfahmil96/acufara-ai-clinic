@@ -27,6 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        if ($this->app->environment('production')) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Log Viewer: hanya super_admin yang bisa mengakses
         LogViewer::auth(function ($request) {
             return $request->user()?->hasRole('super_admin') ?? false;
