@@ -18,7 +18,7 @@ Jika Anda belum terbiasa dengan otomatisasi, Anda bisa memperbarui aplikasi seca
    ```bash
    docker push adamfahmil96/acufara-ai-clinic:latest
    ```
-3. **Perbarui Google Cloud Run**:
+3. **Perbarui Google Cloud Run** *(layanan harus sudah dibuat sebelumnya, lihat Bagian 3)*:
    - Buka Google Cloud Console > menu **Cloud Run**.
    - Klik layanan `acufara-ai-clinic` Anda.
    - Di bagian atas, klik tombol **Edit & Deploy New Revision**.
@@ -91,6 +91,7 @@ jobs:
           service: acufara-ai-clinic      # Sesuaikan dengan nama layanan Anda di GCP
           region: asia-southeast2         # Region Jakarta
           image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:latest
+          flags: '--allow-unauthenticated' # Agar website bisa diakses publik
 ```
 
 ### Cara Kerja Setelah Disetel:
@@ -106,7 +107,117 @@ jobs:
 
 ---
 
-## 3. Manajemen Variabel Lingkungan (.env) di Cloud Run & CI/CD
+## 3. Membuat Layanan Cloud Run Pertama Kali (Deploy Awal)
+
+> [!IMPORTANT]
+> **Langkah ini hanya perlu dilakukan SATU KALI.** Setelah layanan berhasil dibuat, Anda tidak perlu mengulanginya lagi. Langkah-langkah di Bagian 1 (Manual) dan Bagian 2 (CI/CD) mengasumsikan layanan ini sudah ada.
+
+Jika Anda baru memiliki **project** dan **Service Account** di Google Cloud tetapi belum pernah membuat layanan Cloud Run, ada **dua opsi** untuk membuat layanan pertama kali:
+
+---
+
+### Opsi A: Buat Manual via Google Cloud Console
+
+Opsi ini cocok jika Anda ingin memahami setiap konfigurasi secara visual dan memiliki kontrol penuh.
+
+#### Prasyarat:
+- Anda sudah memiliki project di Google Cloud Console.
+- Anda sudah memiliki Docker Image yang ter-push ke Docker Hub (lihat Bagian 1, langkah 1 & 2).
+- API **Cloud Run Admin API** sudah diaktifkan di project Anda (biasanya otomatis aktif saat pertama kali membuka halaman Cloud Run).
+
+#### Langkah-langkah:
+
+1. **Buka Halaman Cloud Run**
+   - Masuk ke [Google Cloud Console](https://console.cloud.google.com).
+   - Pastikan Anda sudah memilih project yang benar di dropdown pojok kiri atas.
+   - Di panel navigasi kiri, klik **Cloud Run** (atau ketik "Cloud Run" di *Search Bar* atas lalu pilih hasilnya).
+
+2. **Buat Layanan Baru**
+   - Di halaman Cloud Run, klik tombol **+ CREATE SERVICE** (atau **+ Buat Layanan**) di bagian atas halaman.
+
+3. **Konfigurasi Sumber Container Image**
+   - Pilih opsi **Deploy one revision from an existing container image**.
+   - Di kolom **Container image URL**, masukkan URL image Docker Hub Anda:
+     ```
+     docker.io/adamfahmil96/acufara-ai-clinic:latest
+     ```
+   - Klik **Select** untuk mengonfirmasi.
+
+4. **Konfigurasi Nama & Region Layanan**
+   - Di kolom **Service name**, isi dengan: `acufara-ai-clinic`
+   - Di kolom **Region**, pilih: **asia-southeast2 (Jakarta)** agar server dekat dengan pengguna di Indonesia.
+
+5. **Konfigurasi Autentikasi (Penting!)**
+   - Di bagian **Authentication**, pilih: **Allow unauthenticated invocations** (Izinkan pemanggilan tanpa autentikasi).
+   - Ini diperlukan agar website Anda dapat diakses secara publik oleh siapa saja melalui browser.
+
+6. **Konfigurasi Port Container**
+   - Buka bagian **Container(s), Volumes, Networking, Security** (klik untuk membuka dropdown jika tertutup).
+   - Di tab **Container**, pastikan **Container port** diisi dengan port yang diekspos oleh Dockerfile Anda (biasanya `8080`).
+
+7. **Konfigurasi Resource (Opsional tapi Disarankan)**
+   - Masih di tab **Container**, Anda bisa menyesuaikan:
+     - **Memory**: `512 MiB` (cukup untuk Laravel skala kecil; naikkan ke `1 GiB` jika perlu).
+     - **CPU**: `1` (cukup untuk awal).
+   - Di bagian **Autoscaling**, atur:
+     - **Minimum number of instances**: `0` (agar tidak kena biaya saat tidak ada traffic).
+     - **Maximum number of instances**: `2` (batasi agar biaya tidak membengkak).
+
+8. **Deploy!**
+   - Setelah semua konfigurasi selesai, klik tombol **CREATE** (atau **Buat**) di bagian bawah halaman.
+   - Tunggu beberapa menit hingga proses deploy selesai. Anda akan melihat indikator centang hijau jika berhasil.
+   - Setelah berhasil, Google Cloud akan memberikan URL publik untuk layanan Anda (contoh: `https://acufara-ai-clinic-xxxxx-et.a.run.app`).
+
+---
+
+### Opsi B: Biarkan GitHub Actions Membuatkan Otomatis (Rekomendasi)
+
+Opsi ini adalah cara paling praktis. Anda **tidak perlu membuat layanan secara manual** di Console. Action `deploy-cloudrun@v2` pada file `deploy.yml` akan **otomatis membuat layanan Cloud Run baru** jika layanan dengan nama tersebut belum ada.
+
+#### Prasyarat:
+- Anda sudah menyelesaikan setup **Secrets** di GitHub (lihat Bagian 2: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `GCP_SA_KEY`).
+- API **Cloud Run Admin API** sudah diaktifkan di project Google Cloud Anda.
+- Service Account Anda memiliki Role: **Cloud Run Admin** dan **Service Account User**.
+
+#### Langkah-langkah:
+
+1. **Pastikan `deploy.yml` sudah benar**
+   File `.github/workflows/deploy.yml` Anda sudah berisi konfigurasi yang tepat, termasuk:
+   - `service: acufara-ai-clinic` — nama layanan yang akan dibuat.
+   - `region: asia-southeast2` — region Jakarta.
+   - `flags: '--allow-unauthenticated'` — agar website bisa diakses publik.
+   
+   > [!NOTE]
+   > Baris `flags: '--allow-unauthenticated'` sangat penting! Tanpa flag ini, layanan yang dibuat otomatis akan bersifat **private** dan tidak bisa diakses dari browser.
+
+2. **Lakukan `git push` pertama ke branch `main`**
+   ```bash
+   git add .
+   git commit -m "Initial deploy to Cloud Run"
+   git push origin main
+   ```
+
+3. **Pantau proses di GitHub**
+   - Buka tab **Actions** di repo GitHub Anda.
+   - Anda akan melihat workflow `Deploy to Google Cloud Run` sedang berjalan.
+   - Tunggu hingga semua step selesai (biasanya 3-5 menit untuk push pertama).
+
+4. **Dapatkan URL publik**
+   - Setelah workflow berhasil (centang hijau), buka [Google Cloud Console > Cloud Run](https://console.cloud.google.com/run).
+   - Anda akan melihat layanan `acufara-ai-clinic` sudah terbuat secara otomatis.
+   - Klik layanan tersebut untuk melihat URL publik di bagian atas halaman.
+
+> [!TIP]
+> **Kapan memilih Opsi A vs Opsi B?**
+> - Pilih **Opsi A** jika Anda ingin mengatur resource (memory, CPU, autoscaling) secara detail dari awal.
+> - Pilih **Opsi B** jika Anda ingin cara tercepat dan paling praktis. Anda selalu bisa mengubah konfigurasi resource nanti melalui Console setelah layanan sudah terbuat.
+
+> [!TIP]
+> Simpan URL publik yang diberikan oleh Cloud Run. URL ini adalah alamat website Anda yang dapat diakses dari mana saja. Anda juga bisa menghubungkan *custom domain* di kemudian hari melalui tab **Integrations** atau **Custom Domains** di halaman layanan.
+
+---
+
+## 4. Manajemen Variabel Lingkungan (.env) di Cloud Run & CI/CD
 
 Penting untuk dipahami bahwa **file `.env` TIDAK BOLEH di-push ke GitHub atau di-build ke dalam Docker Image** demi keamanan (agar password database atau API key tidak bocor ke publik).
 
@@ -120,7 +231,8 @@ Ketika Laravel berjalan di dalam lingkungan Docker, framework ini secara otomati
 **1. Setel Variabel Sekali Saja di GCP Web Console**
 Daripada memindahkan file `.env` ke GitHub (yang sangat berisiko), praktik paling aman adalah memasukkannya langsung di server Google:
 - Buka antarmuka Google Cloud Console > menu **Cloud Run**.
-- Klik layanan Anda, lalu tekan tombol **Edit & Deploy New Revision**.
+- Klik layanan `acufara-ai-clinic` Anda (yang sudah dibuat di Bagian 3).
+- Tekan tombol **Edit & Deploy New Revision**.
 - Buka tab **Variables & Secrets**.
 - Tambahkan variabel dari `.env` lokal Anda satu per satu (seperti `DB_HOST`, `DB_PASSWORD`, `APP_KEY`, `FONNTE_TOKEN`).
 - Klik **Deploy**.

@@ -69,7 +69,7 @@ RUN if [ -f package-lock.json ]; then npm ci; else npm install; fi
 COPY resources/ ./resources/
 COPY vite.config.js ./
 
-RUN npm run build
+RUN NODE_OPTIONS="--dns-result-order=ipv4first" npm run build
 
 # ============================================================
 # Stage 4: Production Image (FrankenPHP)
