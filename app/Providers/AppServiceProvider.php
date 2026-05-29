@@ -27,14 +27,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Paksa HTTPS di Production ATAU jika sedang berjalan di Google Cloud Run
-        if ($this->app->environment('production') || env('K_SERVICE')) {
+        // Paksa HTTPS di Production, Demo, ATAU jika sedang berjalan di Google Cloud Run
+        if ($this->app->environment('production', 'demo') || env('K_SERVICE')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
-        // Log Viewer: hanya super_admin yang bisa mengakses
+        // Log Viewer: hanya developer yang bisa mengakses
         LogViewer::auth(function ($request) {
-            return $request->user()?->hasRole('super_admin') ?? false;
+            return $request->user()?->hasRole('developer') ?? false;
         });
 
         Storage::extend('gcs', function ($app, array $config) {

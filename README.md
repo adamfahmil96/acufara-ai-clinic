@@ -55,11 +55,13 @@ Installable web app experience directly from the browser to your device's home s
     docker-compose up -d
     ```
 
-4. Install dependencies and run migrations:
+4. Install dependencies, run migrations, generate permissions, and seed data:
 
     ```bash
     composer install
-    php artisan migrate --seed
+    php artisan migrate
+    php artisan shield:generate --all
+    php artisan db:seed
     ```
 
 5. Access the app at `http://localhost:8000` and the admin panel at `http://localhost:8000/admin`.

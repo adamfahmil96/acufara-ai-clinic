@@ -37,8 +37,13 @@ class WhatsAppAuthController extends Controller
 
         // Simpan nomor WA ke session untuk halaman verifikasi
         session(['otp_whatsapp_number' => $waNumber]);
+        
+        $message = 'Kode OTP telah dikirim ke nomor WhatsApp Anda.';
+        if (session()->has('demo_otp')) {
+            $message .= ' (MODE DEMO: OTP Anda adalah ' . session('demo_otp') . ')';
+        }
 
-        return redirect()->route('login.verify')->with('status', 'Kode OTP telah dikirim ke nomor WhatsApp Anda.');
+        return redirect()->route('login.verify')->with('status', $message);
     }
 
     public function showVerifyForm()

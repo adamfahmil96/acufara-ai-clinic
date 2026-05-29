@@ -16,7 +16,7 @@ Siapkan URL koneksi atau kredensial database Anda (Host, Port, DB Name, User, Pa
 
 ## Tahap 3: Konfigurasi Kontainer & Port
 1. Buka bagian/dropdown **Container, Networking, Security**.
-2. Di tab **Container**, pastikan **Container port** diisi dengan angka `80` *(karena server FrankenPHP berjalan di port 80).*
+2. Di tab **Container**, pastikan **Container port** diisi dengan angka `8080` *(standar port trafik dari Load Balancer Cloud Run).*
 3. Untuk **Memory**, disarankan minimal `512 MiB` atau `1 GiB`.
 
 ## Tahap 4: Mengatur Variabel Lingkungan (Environment Variables)
@@ -34,6 +34,7 @@ Masih di tab **Container**, *scroll* ke bawah untuk menemukan menu **Environment
 | `DB_DATABASE` | *(Nama Database)* | |
 | `DB_USERNAME` | *(User Database)* | |
 | `DB_PASSWORD` | *(Password Database)* | |
+| `SERVER_NAME` | `:8080` | **Wajib!** Mematikan fitur Auto-HTTPS FrankenPHP/Caddy agar tidak berbenturan dengan Load Balancer GCP (mencegah error *ERR_TOO_MANY_ACCEPT_CH_RESTARTS* atau *Redirect Loop*). |
 | `FONNTE_TOKEN` | *(copy dari `.env`)* | Untuk WhatsApp |
 | `GEMINI_API_KEY`| *(copy dari `.env`)* | Untuk fitur AI |
 | `FILESYSTEM_DISK`| `gcs` | Agar foto tersimpan di Cloud Storage |

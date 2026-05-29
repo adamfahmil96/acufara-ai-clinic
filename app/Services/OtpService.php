@@ -21,6 +21,13 @@ class OtpService
         // Simpan OTP ke cache selama 5 menit
         Cache::put($this->getCacheKey($waNumber), $otp, now()->addMinutes(5));
 
+        // Mode Demo: jangan kirim OTP ke WA, hanya ke log & flash session
+        if (config('app.env') === 'demo' || config('app.env') === 'local') {
+            $this->sendViaLog($waNumber, $otp);
+            session()->flash('demo_otp', $otp);
+            return;
+        }
+
         // Mengirim via Fonnte API
         $token = config('services.fonnte.token');
         
@@ -51,6 +58,11 @@ class OtpService
      */
     public function verify(string $waNumber, string $otp): bool
     {
+        // Bypass khusus demo account
+        if ($waNumber === '08111111111' && $otp === '1234') {
+            return true;
+        }
+
         $cachedOtp = Cache::get($this->getCacheKey($waNumber));
 
         if ($cachedOtp && $cachedOtp === $otp) {

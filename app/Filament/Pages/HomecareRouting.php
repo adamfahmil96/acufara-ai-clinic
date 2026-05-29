@@ -27,7 +27,7 @@ class HomecareRouting extends Page implements HasTable
     use InteractsWithTable;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
-    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Jadwal';
+    protected static string|UnitEnum|null $navigationGroup = null;
     protected static ?string $navigationLabel = 'Homecare Routing';
     protected static ?string $title = 'Smart Homecare Routing';
     protected static ?string $slug = 'homecare-routing';
@@ -54,7 +54,7 @@ class HomecareRouting extends Page implements HasTable
         $locations = [];
         
         // Gunakan koordinat Cabang Utama sebagai titik start (yang pertama aktif dengan koordinat)
-        $branch = Branch::where('is_active', true)
+        $branch = Branch::whereRaw('is_active = true')
             ->whereNotNull('lat')
             ->whereNotNull('lng')
             ->first();

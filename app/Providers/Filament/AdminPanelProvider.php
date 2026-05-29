@@ -56,7 +56,7 @@ class AdminPanelProvider extends PanelProvider
                     ->icon('heroicon-o-document-magnifying-glass')
                     ->group('Akses')
                     ->sort(100)
-                    ->visible(fn (): bool => auth()->user()?->hasRole('super_admin') ?? false),
+                    ->visible(fn (): bool => auth()->user()?->hasRole('developer') ?? false),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -66,7 +66,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                \App\Filament\Widgets\AcufaraInfoWidget::class,
             ])
             ->plugins([
                 FilamentShieldPlugin::make()
@@ -91,6 +91,14 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->renderHook(
+                \Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
+                fn (): string => \Illuminate\Support\Facades\Blade::render('
+                    <div class="mt-4 text-center">
+                        <a href="/" class="text-sm font-medium hover:underline" style="color: #87A878;">&larr; Kembali ke Laman Depan</a>
+                    </div>
+                ')
+            )
             ->renderHook(
                 \Filament\View\PanelsRenderHook::HEAD_END,
                 fn (): string => \Illuminate\Support\Facades\Blade::render('

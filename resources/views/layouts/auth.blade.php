@@ -37,13 +37,19 @@
 <body class="min-h-screen flex flex-col justify-center py-12 px-6 antialiased text-neutral-900">
 
     <div class="mx-auto w-full max-w-md text-center">
-        <a href="/" class="text-xl font-bold tracking-tight text-neutral-900 hover:text-sage transition-colors">Acufara</a>
+        <a href="/" class="inline-block">
+            <img src="{{ asset('images/acufara-header.svg') }}" alt="Acufara" class="h-10 mx-auto">
+        </a>
         <p class="mt-2 text-sm text-neutral-500">Klinik Akupunktur & Kecantikan dengan Asisten AI</p>
     </div>
 
     <div class="mt-8 mx-auto w-full max-w-md">
         <div class="rounded-3xl bg-[var(--color-card)] p-8 sm:p-10">
             @yield('content')
+        </div>
+        
+        <div class="mt-6 text-center">
+            <a href="/" class="text-sm font-medium hover:underline" style="color: var(--color-sage-dark);">&larr; Kembali ke Laman Depan</a>
         </div>
     </div>
 
