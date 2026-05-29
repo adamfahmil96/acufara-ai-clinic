@@ -13,6 +13,8 @@ class RolePermissionSeeder extends Seeder
      */
     private const ROLES = [
         'super_admin',
+        'developer',
+        'demo_super_admin',
         'branch_admin',
         'patient',
     ];
@@ -21,11 +23,16 @@ class RolePermissionSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        foreach (self::ROLES as $role) {
-            Role::firstOrCreate([
-                'name' => $role,
+        foreach (self::ROLES as $roleName) {
+            $role = Role::firstOrCreate([
+                'name' => $roleName,
                 'guard_name' => 'web',
             ]);
+
+            if ($roleName === 'demo_super_admin') {
+                $viewPermissions = \Spatie\Permission\Models\Permission::where('name', 'like', 'view_%')->get();
+                $role->syncPermissions($viewPermissions);
+            }
         }
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();

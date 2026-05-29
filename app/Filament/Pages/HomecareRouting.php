@@ -54,7 +54,7 @@ class HomecareRouting extends Page implements HasTable
         $locations = [];
         
         // Gunakan koordinat Cabang Utama sebagai titik start (yang pertama aktif dengan koordinat)
-        $branch = Branch::where('is_active', true)
+        $branch = Branch::whereRaw('is_active = true')
             ->whereNotNull('lat')
             ->whereNotNull('lng')
             ->first();

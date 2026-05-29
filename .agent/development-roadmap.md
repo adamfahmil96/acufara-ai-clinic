@@ -273,14 +273,14 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - Jalankan `php artisan route:list` dan audit
 - Set `APP_DEBUG=false` di `.env.example` untuk produksi
 
-### Langkah 18 — Build Docker & Test Container `[ ]`
+### Langkah 18 — Build Docker & Test Container `[x]`
 
 - Build image: `docker build -t acufara:latest .`
 - Jalankan full stack via `docker-compose up -d`
 - Verifikasi semua fitur berjalan di dalam container
 - Pastikan environment variable GCS dan Gemini API terbaca
 
-### Langkah 19 — Deploy ke Google Cloud Run `[ ]`
+### Langkah 19 — Deploy ke Google Cloud Run `[x]`
 
 - Tag image: `docker tag acufara:latest adamfahmil96/acufara-ai-clinic:latest`
 - Push Docker image ke Docker Hub (`adamfahmil96/acufara-ai-clinic:latest`)
