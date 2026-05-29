@@ -27,7 +27,7 @@ class HomecareRouting extends Page implements HasTable
     use InteractsWithTable;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMap;
-    protected static string|UnitEnum|null $navigationGroup = 'Manajemen Jadwal';
+    protected static string|UnitEnum|null $navigationGroup = null;
     protected static ?string $navigationLabel = 'Homecare Routing';
     protected static ?string $title = 'Smart Homecare Routing';
     protected static ?string $slug = 'homecare-routing';
