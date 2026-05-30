@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Database\Connectors\PostgresConnector;
 use Google\Cloud\Storage\StorageClient;
 use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Gate;
@@ -19,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind('db.connector.pgsql', fn () => new PostgresConnector);
     }
 
     /**

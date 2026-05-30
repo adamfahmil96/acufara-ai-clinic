@@ -256,3 +256,15 @@ DB_PASSWORD=password_anda
 ### ⚠️ Database Supabase di-Pause
 **Penyebab:** Project pada tier gratis otomatis di-pause setelah 7 hari tidak aktif.
 **Solusi:** Buka Supabase Dashboard, klik project yang di-pause, lalu klik **Restore**. Proses ini memakan waktu beberapa menit.
+
+### ❌ Error: "prepared statement does not exist" (SQLSTATE 26000)
+**Penyebab:** Menggunakan Supavisor Connection Pooler (port 6543) dalam Transaction Mode, tetapi PDO PostgreSQL mengirim server-side prepared statements. Di Transaction Mode, koneksi backend dapat berubah antar-transaksi, sehingga prepared statement lama tidak ditemukan.
+
+**Solusi:** Custom `App\Database\Connectors\PostgresConnector` sudah dibuat untuk memaksa emulated prepares dan menggunakan `new PDO()` (bukan `PDO::connect()` PHP 8.4). Pastikan:
+1. `DB_PORT=6543` di Cloud Run
+2. `DB_EMULATE_PREPARES=true` di Cloud Run (sebagai fallback)
+3. Custom connector terdaftar di `AppServiceProvider` (`db.connector.pgsql`)
+
+Jika error masih terjadi, alternatif:
+- Switch `SESSION_DRIVER` dari `database` ke `cookie` (mengurangi query ke pooler)
+- Switch `CACHE_STORE` dari `database` ke `array` atau `redis`
