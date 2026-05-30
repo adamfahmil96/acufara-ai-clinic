@@ -48,4 +48,9 @@ class Article extends Model implements HasMedia
             'is_published' => 'boolean',
         ];
     }
+
+    public function setIsPublishedAttribute($value): void
+    {
+        $this->attributes['is_published'] = $value ? 'true' : 'false';
+    }
 }

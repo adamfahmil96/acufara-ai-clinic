@@ -56,4 +56,9 @@ class Branch extends Model
             'is_active' => 'boolean',
         ];
     }
+
+    public function setIsActiveAttribute($value): void
+    {
+        $this->attributes['is_active'] = $value ? 'true' : 'false';
+    }
 }
