@@ -46,7 +46,7 @@ class AppointmentCalendarWidget extends FullCalendarWidget
             ->map(
                 fn (Appointment $appointment) => [
                     'id' => $appointment->id,
-                    'title' => $appointment->patient->user->name . ' - ' . $appointment->service->name,
+                    'title' => ($appointment->patient?->user?->name ?? 'Unknown') . ' - ' . ($appointment->service?->name ?? 'Unknown Service'),
                     'start' => $appointment->scheduled_at->format('Y-m-d\TH:i:s'),
                     'end' => $appointment->scheduled_at->addMinutes(60)->format('Y-m-d\TH:i:s'), // Assuming 1 hour per appointment
                     'url' => \App\Filament\Resources\Appointments\AppointmentResource::getUrl('view', ['record' => $appointment]),
