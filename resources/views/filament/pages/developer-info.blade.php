@@ -24,4 +24,33 @@
             </div>
         </div>
     </x-filament::section>
+
+    <!-- Header Change Logs -->
+    <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+        <h3 class="text-gray-950 dark:text-white" style="font-size: 1.25rem; font-weight: bold; margin: 0; padding: 0;">Catatan Perubahan (Change Logs)</h3>
+
+        <!-- Change Log v1.1 -->
+        <x-filament::section collapsible collapsed>
+            <x-slot name="heading">
+                Acufara v1.1 (Saat Ini)
+            </x-slot>
+            <x-slot name="description">
+                Pembaruan fitur AI, optimalisasi rute, peta geocoding dan infrastruktur PWA/GCS
+            </x-slot>
+            
+            @include('filament.pages.changelogs.v1-1')
+        </x-filament::section>
+
+        <!-- Change Log v1.0 -->
+        <x-filament::section collapsible collapsed>
+            <x-slot name="heading">
+                Acufara v1.0 (Rilis Awal / MVP)
+            </x-slot>
+            <x-slot name="description">
+                Pembangunan fondasi infrastruktur, operasional klinik, dan integrasi WhatsApp OTP
+            </x-slot>
+            
+            @include('filament.pages.changelogs.v1-0')
+        </x-filament::section>
+    </div>
 </x-filament-panels::page>
