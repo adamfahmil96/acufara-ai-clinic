@@ -289,7 +289,7 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - Jalankan `php artisan migrate --force` via Cloud Run Job
 - Verifikasi URL produksi live dan semua fitur berfungsi
 
-### Langkah 20 — Demo & Dokumentasi Final `[/]`
+### Langkah 20 — Demo & Dokumentasi Final `[x]`
 
 - [x] Update `README.md` dengan cara deploy lengkap
 - Siapkan demo account (superadmin + branch admin + 1 pasien contoh)
