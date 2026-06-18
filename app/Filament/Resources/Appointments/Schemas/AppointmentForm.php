@@ -3,22 +3,22 @@
 namespace App\Filament\Resources\Appointments\Schemas;
 
 use App\Models\Appointment;
+use App\Models\Patient;
 use App\Services\GeminiService;
+use Filament\Actions\Action as FormAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Placeholder;
-use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Group;
-use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Actions;
-use Filament\Actions\Action as FormAction;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
-use Filament\Notifications\Notification;
 use Filament\Schemas\Schema;
-use Illuminate\Support\HtmlString;
 
 class AppointmentForm
 {
@@ -37,8 +37,8 @@ class AppointmentForm
                                     ->searchable(),
                                 Select::make('patient_id')
                                     ->label('Pasien')
-                                    ->getSearchResultsUsing(fn (string $search): array => \App\Models\Patient::whereHas('user', fn ($query) => $query->where('name', 'ilike', "%{$search}%"))->limit(50)->get()->mapWithKeys(fn ($patient) => [$patient->id => $patient->user?->name])->toArray())
-                                    ->getOptionLabelUsing(fn ($value): ?string => \App\Models\Patient::find($value)?->user?->name)
+                                    ->getSearchResultsUsing(fn (string $search): array => Patient::whereHas('user', fn ($query) => $query->where('name', 'ilike', "%{$search}%"))->limit(50)->get()->mapWithKeys(fn ($patient) => [$patient->id => $patient->user?->name])->toArray())
+                                    ->getOptionLabelUsing(fn ($value): ?string => Patient::find($value)?->user?->name)
                                     ->required()
                                     ->searchable(),
                                 Select::make('service_id')
@@ -49,10 +49,14 @@ class AppointmentForm
                                 DateTimePicker::make('scheduled_at')
                                     ->label('Jadwal Kunjungan')
                                     ->required(),
-                                TextInput::make('final_price')
-                                    ->label('Harga Akhir (Rp)')
-                                    ->numeric()
-                                    ->prefix('Rp'),
+                                auth()->user()->isDemo()
+                                    ? Placeholder::make('final_price')
+                                        ->label('Harga Akhir (Rp)')
+                                        ->content('Rp ***')
+                                    : TextInput::make('final_price')
+                                        ->label('Harga Akhir (Rp)')
+                                        ->numeric()
+                                        ->prefix('Rp'),
                             ])
                             ->columns(2),
 
@@ -81,6 +85,7 @@ class AppointmentForm
                                                     ->body('Silakan isi ringkasan keluhan terlebih dahulu.')
                                                     ->warning()
                                                     ->send();
+
                                                 return;
                                             }
 
@@ -89,9 +94,9 @@ class AppointmentForm
                                                 $gemini = app(GeminiService::class);
                                                 $result = $gemini->analyzeComplaint($complaint);
 
-                                                $set('ai_urgency',        $result['urgency']        ?? '');
+                                                $set('ai_urgency', $result['urgency'] ?? '');
                                                 $set('ai_recommendation', $result['recommendation'] ?? '');
-                                                $set('ai_notes',          $result['notes']          ?? '');
+                                                $set('ai_notes', $result['notes'] ?? '');
 
                                                 Notification::make()
                                                     ->title('✅ Analisis selesai')
@@ -101,7 +106,7 @@ class AppointmentForm
                                             } catch (\Throwable $e) {
                                                 Notification::make()
                                                     ->title('❌ Gagal menghubungi AI')
-                                                    ->body('Error: ' . $e->getMessage())
+                                                    ->body('Error: '.$e->getMessage())
                                                     ->danger()
                                                     ->send();
                                             }
@@ -142,10 +147,10 @@ class AppointmentForm
                                 Select::make('status')
                                     ->label('Status')
                                     ->options([
-                                        Appointment::STATUS_SCHEDULED   => 'Terjadwal',
+                                        Appointment::STATUS_SCHEDULED => 'Terjadwal',
                                         Appointment::STATUS_IN_PROGRESS => 'Sedang Berlangsung',
-                                        Appointment::STATUS_COMPLETED   => 'Selesai',
-                                        Appointment::STATUS_CANCELLED   => 'Dibatalkan',
+                                        Appointment::STATUS_COMPLETED => 'Selesai',
+                                        Appointment::STATUS_CANCELLED => 'Dibatalkan',
                                     ])
                                     ->required()
                                     ->default(Appointment::STATUS_SCHEDULED),
@@ -153,7 +158,7 @@ class AppointmentForm
                                 Select::make('service_location_type')
                                     ->label('Tipe Lokasi')
                                     ->options([
-                                        Appointment::LOCATION_CLINIC   => 'Klinik',
+                                        Appointment::LOCATION_CLINIC => 'Klinik',
                                         Appointment::LOCATION_HOMECARE => 'Homecare',
                                     ])
                                     ->required()

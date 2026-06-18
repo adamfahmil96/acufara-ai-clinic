@@ -4,9 +4,9 @@ namespace App\Filament\Widgets;
 
 use App\Models\Appointment;
 use App\Models\Patient;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
-use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Illuminate\Support\Carbon;
 
 class StatsOverviewWidget extends BaseWidget
@@ -33,11 +33,11 @@ class StatsOverviewWidget extends BaseWidget
 
         // New Patients this month
         $patientsQuery = Patient::whereMonth('created_at', Carbon::now()->month)
-                                ->whereYear('created_at', Carbon::now()->year);
-        // Note: Patient doesn't strictly belong to a branch in our schema unless we join appointments. 
+            ->whereYear('created_at', Carbon::now()->year);
+        // Note: Patient doesn't strictly belong to a branch in our schema unless we join appointments.
         // We'll just show all new patients, or filter by patients who had an appointment at this branch.
         if ($branchId) {
-            $patientsQuery->whereHas('appointments', function($q) use ($branchId) {
+            $patientsQuery->whereHas('appointments', function ($q) use ($branchId) {
                 $q->where('branch_id', $branchId);
             });
         }
@@ -45,8 +45,8 @@ class StatsOverviewWidget extends BaseWidget
 
         // Revenue this month (Completed appointments)
         $revenueQuery = Appointment::where('status', Appointment::STATUS_COMPLETED)
-                                ->whereMonth('scheduled_at', Carbon::now()->month)
-                                ->whereYear('scheduled_at', Carbon::now()->year);
+            ->whereMonth('scheduled_at', Carbon::now()->month)
+            ->whereYear('scheduled_at', Carbon::now()->year);
         if ($branchId) {
             $revenueQuery->where('branch_id', $branchId);
         }
@@ -63,7 +63,7 @@ class StatsOverviewWidget extends BaseWidget
                 ->descriptionIcon('heroicon-m-user-group')
                 ->color('success'),
 
-            Stat::make('Pendapatan', 'Rp ' . number_format($revenue, 0, ',', '.'))
+            Stat::make('Pendapatan', auth()->user()->isDemo() ? 'Rp ***' : 'Rp '.number_format($revenue, 0, ',', '.'))
                 ->description('Dari jadwal selesai bulan ini')
                 ->descriptionIcon('heroicon-m-banknotes')
                 ->color('warning'),

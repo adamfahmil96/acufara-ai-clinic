@@ -69,6 +69,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasAnyRole(['super_admin', 'developer', 'demo_super_admin', 'branch_admin']);
     }
 
+    public function isDemo(): bool
+    {
+        return $this->hasRole('demo_super_admin');
+    }
+
     public static function loginField(): string
     {
         return self::LOGIN_FIELD;
