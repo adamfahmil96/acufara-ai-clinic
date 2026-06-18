@@ -3,14 +3,14 @@
 namespace App\Filament\Resources\Appointments\Tables;
 
 use App\Models\Appointment;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Actions\Action;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -62,7 +62,7 @@ class AppointmentsTable
                     }),
                 TextColumn::make('final_price')
                     ->label('Harga')
-                    ->money('IDR')
+                    ->formatStateUsing(fn ($state): string => auth()->user()->isDemo() ? 'Rp ***' : 'Rp '.number_format($state ?? 0, 0, ',', '.'))
                     ->sortable(),
             ])
             ->filters([
@@ -83,8 +83,8 @@ class AppointmentsTable
                     ->requiresConfirmation()
                     ->action(fn (Appointment $record) => $record->update(['status' => Appointment::STATUS_COMPLETED]))
                     ->visible(fn (Appointment $record) => $record->status === Appointment::STATUS_IN_PROGRESS),
-                \Filament\Actions\ViewAction::make(),
-                \Filament\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

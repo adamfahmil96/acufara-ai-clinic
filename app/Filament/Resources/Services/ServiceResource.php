@@ -66,7 +66,7 @@ class ServiceResource extends Resource
                     ->sortable(),
                 TextColumn::make('base_price')
                     ->label('Harga Dasar')
-                    ->formatStateUsing(fn (int $state): string => Number::currency($state, 'IDR', 'id'))
+                    ->formatStateUsing(fn (int $state): string => auth()->user()->isDemo() ? 'Rp ***' : Number::currency($state, 'IDR', 'id'))
                     ->sortable(),
                 IconColumn::make('is_active')
                     ->label('Aktif')
