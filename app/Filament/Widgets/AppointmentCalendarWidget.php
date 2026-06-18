@@ -35,6 +35,15 @@ class AppointmentCalendarWidget extends FullCalendarWidget
         }
 
         $query = Appointment::query()
+            ->with(['patient.user', 'service'])
+            ->select([
+                'id',
+                'branch_id',
+                'patient_id',
+                'service_id',
+                'status',
+                'scheduled_at',
+            ])
             ->where('scheduled_at', '>=', $fetchInfo['start'])
             ->where('scheduled_at', '<=', $fetchInfo['end']);
 
@@ -48,14 +57,14 @@ class AppointmentCalendarWidget extends FullCalendarWidget
                     'id' => $appointment->id,
                     'title' => ($appointment->patient?->user?->name ?? 'Unknown') . ' - ' . ($appointment->service?->name ?? 'Unknown Service'),
                     'start' => $appointment->scheduled_at->format('Y-m-d\TH:i:s'),
-                    'end' => $appointment->scheduled_at->addMinutes(60)->format('Y-m-d\TH:i:s'), // Assuming 1 hour per appointment
+                    'end' => $appointment->scheduled_at->addMinutes(60)->format('Y-m-d\TH:i:s'),
                     'url' => \App\Filament\Resources\Appointments\AppointmentResource::getUrl('view', ['record' => $appointment]),
                     'shouldOpenUrlInNewTab' => false,
                     'backgroundColor' => match ($appointment->status) {
-                        Appointment::STATUS_SCHEDULED => '#6b7280', // gray
-                        Appointment::STATUS_IN_PROGRESS => '#f59e0b', // warning
-                        Appointment::STATUS_COMPLETED => '#10b981', // success
-                        Appointment::STATUS_CANCELLED => '#ef4444', // danger
+                        Appointment::STATUS_SCHEDULED => '#6b7280',
+                        Appointment::STATUS_IN_PROGRESS => '#f59e0b',
+                        Appointment::STATUS_COMPLETED => '#10b981',
+                        Appointment::STATUS_CANCELLED => '#ef4444',
                         default => '#3b82f6',
                     },
                     'borderColor' => 'transparent',
