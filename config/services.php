@@ -24,6 +24,7 @@ return [
 
     'fonnte' => [
         'token' => env('FONNTE_TOKEN'),
+        'acufara_number' => env('ACUFARA_WHATSAPP_NUMBER'),
     ],
 
     'ses' => [

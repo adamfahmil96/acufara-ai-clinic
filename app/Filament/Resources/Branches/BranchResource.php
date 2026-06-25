@@ -59,6 +59,13 @@ class BranchResource extends Resource
                     ->live(debounce: 1500)
                     ->columnSpanFull(),
 
+                TextInput::make('whatsapp_number')
+                    ->label('Nomor WhatsApp Cabang')
+                    ->placeholder('628xxxxxxxxxx')
+                    ->helperText('Nomor WA ini akan menerima notifikasi booking dari pasien (tipe Klinik).')
+                    ->maxLength(20)
+                    ->columnSpan(2),
+
                 // ─── Koordinat ───────────────────────────────────────────────
                 TextInput::make('lat')
                     ->label('Latitude')
@@ -151,6 +158,10 @@ class BranchResource extends Resource
                     ->label('Alamat')
                     ->limit(60)
                     ->searchable(),
+                TextColumn::make('whatsapp_number')
+                    ->label('WA Cabang')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: false),
                 IconColumn::make('is_active')
                     ->label('Aktif')
                     ->boolean(),

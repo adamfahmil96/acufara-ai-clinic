@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SelfRegisterController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -18,6 +19,15 @@ Route::get('/blog/{article:slug}', [BlogController::class, 'show'])->name('blog.
 Route::view('/layanan/akupunktur', 'layanan.akupunktur')->name('layanan.akupunktur');
 Route::view('/layanan/bekam', 'layanan.bekam')->name('layanan.bekam');
 Route::view('/layanan/baby-spa', 'layanan.baby-spa')->name('layanan.baby-spa');
+
+// Self-Registration Routes (Public, no auth required)
+Route::get('/daftar', [SelfRegisterController::class, 'index'])->name('self-register.index');
+Route::post('/daftar/lookup', [SelfRegisterController::class, 'lookup'])->name('self-register.lookup');
+Route::post('/daftar', [SelfRegisterController::class, 'store'])->name('self-register.store');
+Route::get('/daftar/berhasil/{appointment}', [SelfRegisterController::class, 'success'])->name('self-register.success');
+
+// AI Triage Endpoint (accessible by both auth and guest, rate limited)
+Route::post('/triage', [BookingController::class, 'triage'])->name('booking.triage')->middleware('throttle:10,1');
 
 // WhatsApp OTP Authentication Routes
 Route::middleware(['guest'])->group(function () {
@@ -40,7 +50,4 @@ Route::middleware(['auth'])->group(function () {
     // Booking Routes
     Route::get('/book', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/book', [BookingController::class, 'store'])->name('booking.store');
-
-    // AI Triage Endpoint (requires auth, rate limited to 10 req/min per user)
-    Route::post('/triage', [BookingController::class, 'triage'])->name('booking.triage')->middleware('throttle:10,1');
 });

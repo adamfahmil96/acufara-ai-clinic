@@ -29,8 +29,5 @@ class Service extends Model
         ];
     }
 
-    public function setIsActiveAttribute($value): void
-    {
-        $this->attributes['is_active'] = $value ? 'true' : 'false';
-    }
+
 }
