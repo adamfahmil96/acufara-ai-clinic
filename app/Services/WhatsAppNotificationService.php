@@ -64,6 +64,8 @@ class WhatsAppNotificationService
             ? 'Homecare (Panggilan ke Rumah)'
             : 'Kunjungan Klinik';
         $keluhan = $appointment->complaint_summary ?: '-';
+        $riwayatPenyakit = $appointment->medical_history ?: '-';
+        $riwayatAlergi = $appointment->allergy_history ?: '-';
         $urgency = $appointment->ai_urgency ?: '-';
         $recommendation = $appointment->ai_recommendation ?: '-';
         $appUrl = config('app.url');
@@ -84,6 +86,8 @@ Cabang: {$cabang}
 Jadwal: {$jadwal}
 Tipe: {$tipe}
 Keluhan: {$keluhan}
+Riwayat Penyakit: {$riwayatPenyakit}
+Riwayat Alergi: {$riwayatAlergi}
 
 🤖 *Analisis AI:*
 Urgensi: {$urgency}

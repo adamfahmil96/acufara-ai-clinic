@@ -101,7 +101,7 @@ Nama Database Lokal: `acufara_db`
 
 7. `appointments`:
     - `id`, `branch_id`, `patient_id`, `service_id`.
-    - `complaint_summary`, `status` (scheduled, in_progress, completed, cancelled).
+    - `complaint_summary`, `medical_history` (text, nullable), `allergy_history` (text, nullable), `status` (scheduled, in_progress, completed, cancelled).
     - `service_location_type` (clinic, homecare).
     - `address_at_time`, `lat` (decimal, 10,8), `lng` (decimal, 11,8).
     - `ai_urgency` (string, nullable), `ai_recommendation` (text, nullable), `ai_notes` (text, nullable) — hasil analisis Gemini Triage.

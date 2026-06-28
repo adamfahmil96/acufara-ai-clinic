@@ -244,6 +244,34 @@
                             class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm resize-none"
                         >{{ old('complaint_summary') }}</textarea>
 
+                        {{-- Riwayat Penyakit --}}
+                        <div class="mt-4">
+                            <label for="medical_history" class="block text-sm font-medium text-gray-700">
+                                Riwayat Penyakit <span class="text-gray-400 font-normal">(Opsional)</span>
+                            </label>
+                            <textarea id="medical_history" name="medical_history" rows="2"
+                                placeholder="Contoh: Diabetes tipe 2, hipertensi, asma..."
+                                class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm resize-none"
+                            >{{ old('medical_history') }}</textarea>
+                            @error('medical_history')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Riwayat Alergi --}}
+                        <div class="mt-4">
+                            <label for="allergy_history" class="block text-sm font-medium text-gray-700">
+                                Riwayat Alergi <span class="text-gray-400 font-normal">(Opsional)</span>
+                            </label>
+                            <textarea id="allergy_history" name="allergy_history" rows="2"
+                                placeholder="Contoh: Alergi debu, antibiotik tertentu, makanan laut..."
+                                class="mt-1 appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm resize-none"
+                            >{{ old('allergy_history') }}</textarea>
+                            @error('allergy_history')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Tombol AI --}}
                         <div class="mt-3 flex items-center gap-3">
                             <button type="button" @click="analyze()"

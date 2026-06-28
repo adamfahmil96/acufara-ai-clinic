@@ -31,6 +31,8 @@ class Appointment extends Model
         'patient_id',
         'service_id',
         'complaint_summary',
+        'medical_history',
+        'allergy_history',
         'ai_urgency',
         'ai_recommendation',
         'ai_notes',
