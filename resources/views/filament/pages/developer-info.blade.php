@@ -29,10 +29,22 @@
     <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
         <h3 class="text-gray-950 dark:text-white" style="font-size: 1.25rem; font-weight: bold; margin: 0; padding: 0;">Catatan Perubahan (Change Logs)</h3>
 
-        <!-- Change Log v1.2 -->
+        <!-- Change Log v2.0 -->
         <x-filament::section collapsible>
             <x-slot name="heading">
-                Acufara v1.2 (Saat Ini)
+                Acufara v2.0 (Saat Ini)
+            </x-slot>
+            <x-slot name="description">
+                Penambahan riwayat medis (penyakit & alergi) pada form booking dan notifikasi WhatsApp
+            </x-slot>
+            
+            @include('filament.pages.changelogs.v2-0')
+        </x-filament::section>
+
+        <!-- Change Log v1.2 -->
+        <x-filament::section collapsible collapsed>
+            <x-slot name="heading">
+                Acufara v1.2
             </x-slot>
             <x-slot name="description">
                 Optimasi performa kalender appointment, database indexing, dan masking data finansial untuk akun demo.
