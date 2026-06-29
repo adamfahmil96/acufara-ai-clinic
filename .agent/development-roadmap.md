@@ -1,6 +1,7 @@
 # 🗺️ Development Roadmap — Acufara AI Clinic
 
-> **Kompetisi**: #JuaraVibeCoding · **Deadline**: 31 Mei 2026  
+> **Kompetisi**: #JuaraVibeCoding · **Deadline**: 31 Mei 2026 ✅ (Selesai)  
+> **Status**: Maintenance & Pengembangan Fitur Klien  
 > **Environment**: WSL Ubuntu 26.04 · Laravel 13 · PHP 8.4 · PostgreSQL · Docker (FrankenPHP)
 
 Dokumen ini adalah panduan urutan pengerjaan sesi vibe coding.  
@@ -87,7 +88,7 @@ Buat migration files (urutan sesuai foreign key dependency):
 6. Buat `create_services_table`: `name`, `base_price`, `is_active`
 7. Buat `create_appointments_table`:
    - `branch_id`, `patient_id`, `service_id`
-   - `complaint_summary`, `status` (enum: scheduled/in_progress/completed/cancelled)
+   - `complaint_summary`, `medical_history` (text, nullable), `allergy_history` (text, nullable), `status` (enum: scheduled/in_progress/completed/cancelled)
    - `service_location_type` (enum: clinic/homecare)
    - `address_at_time`, `lat` (decimal 10,8), `lng` (decimal 11,8)
    - `final_price`, `scheduled_at`, `deleted_at`
@@ -295,6 +296,24 @@ Buat Filament Resource untuk (urutan dari yang paling sederhana):
 - Siapkan demo account (superadmin + branch admin + 1 pasien contoh)
 - Record demo video singkat untuk submission kompetisi
 - Submit ke #JuaraVibeCoding sebelum 31 Mei 2026 ✅
+
+---
+
+## FASE 6 — Pengembangan Berkelanjutan (Post-Kompetisi)
+
+> Tujuan: Penyesuaian berdasarkan kebutuhan riil klien (adik ipar) di lapangan.
+
+### Langkah 21 — Riwayat Medis pada Form Booking `[x]`
+
+**Konteks**: Format reservasi via WhatsApp dari pasien mencantumkan riwayat penyakit dan alergi. Sistem sebelumnya tidak memiliki field ini.
+
+- Migration: tambah kolom `medical_history` (text, nullable) dan `allergy_history` (text, nullable) ke tabel `appointments`
+- Model `Appointment`: tambah `medical_history`, `allergy_history` ke `$fillable`
+- **Filament Form** `AppointmentResource`: tambah Textarea "Riwayat Penyakit" dan "Riwayat Alergi" di Section "Keluhan Pasien"
+- **Form Booking Publik** (`/book`): tambah textarea opsional untuk riwayat penyakit & alergi
+- **Form Self-Register** (`/daftar`): tambah textarea opsional untuk riwayat penyakit & alergi
+- **WhatsApp Notification**: sertakan riwayat penyakit & alergi di pesan notifikasi booking baru
+- Kedua field bersifat opsional (nullable) sehingga tidak memengaruhi data existing
 
 ---
 

@@ -50,7 +50,7 @@
                         <option value="">-- Pilih Layanan --</option>
                         @foreach($services as $service)
                             <option value="{{ $service->id }}" {{ old('service_id') == $service->id ? 'selected' : '' }}>
-                                {{ $service->name }} — Rp {{ number_format($service->base_price, 0, ',', '.') }}
+                                {{ $service->name }}
                             </option>
                         @endforeach
                     </select>
@@ -126,6 +126,44 @@
                 @error('complaint_summary')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
+
+                {{-- Riwayat Penyakit --}}
+                <div class="mt-4">
+                    <label for="medical_history" class="block text-sm font-medium text-gray-700">
+                        Riwayat Penyakit <span class="text-gray-400 font-normal">(Opsional)</span>
+                    </label>
+                    <div class="mt-1">
+                        <textarea
+                            id="medical_history"
+                            name="medical_history"
+                            rows="2"
+                            placeholder="Contoh: Diabetes tipe 2, hipertensi, asma..."
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm resize-none"
+                        >{{ old('medical_history') }}</textarea>
+                    </div>
+                    @error('medical_history')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Riwayat Alergi --}}
+                <div class="mt-4">
+                    <label for="allergy_history" class="block text-sm font-medium text-gray-700">
+                        Riwayat Alergi <span class="text-gray-400 font-normal">(Opsional)</span>
+                    </label>
+                    <div class="mt-1">
+                        <textarea
+                            id="allergy_history"
+                            name="allergy_history"
+                            rows="2"
+                            placeholder="Contoh: Alergi debu, antibiotik tertentu, makanan laut..."
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-[#87A878] focus:border-[#87A878] sm:text-sm resize-none"
+                        >{{ old('allergy_history') }}</textarea>
+                    </div>
+                    @error('allergy_history')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 {{-- Hidden Inputs untuk Hasil Triage agar tersimpan saat form disubmit --}}
                 <input type="hidden" name="ai_urgency" :value="result?.urgency || ''">

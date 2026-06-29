@@ -66,6 +66,14 @@ class AppointmentForm
                                     ->label('Ringkasan Keluhan')
                                     ->rows(3)
                                     ->columnSpanFull(),
+                                Textarea::make('medical_history')
+                                    ->label('Riwayat Penyakit')
+                                    ->rows(2)
+                                    ->columnSpanFull(),
+                                Textarea::make('allergy_history')
+                                    ->label('Riwayat Alergi')
+                                    ->rows(2)
+                                    ->columnSpanFull(),
 
                                 // ─── Tombol Analisis AI ─────────────────────────────
                                 Actions::make([

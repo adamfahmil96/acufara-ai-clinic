@@ -17,6 +17,7 @@ class Branch extends Model
     protected $fillable = [
         'nama_cabang',
         'alamat',
+        'whatsapp_number',
         'is_active',
         'lat',
         'lng',
@@ -57,8 +58,5 @@ class Branch extends Model
         ];
     }
 
-    public function setIsActiveAttribute($value): void
-    {
-        $this->attributes['is_active'] = $value ? 'true' : 'false';
-    }
+
 }

@@ -133,6 +133,7 @@
                 </div>
                 <a href="{{ route('home') }}#cara-booking" class="text-sm font-medium text-neutral-900 transition-colors hover:text-sage">Cara Booking</a>
                 <a href="{{ route('home') }}#artikel" class="text-sm font-medium text-neutral-900 transition-colors hover:text-sage">Artikel</a>
+                <a href="{{ route('self-register.index') }}" class="text-sm font-semibold text-[#87A878] transition-colors hover:text-[#6B8F5B]">Daftar Mandiri</a>
             </nav>
             <div class="flex items-center gap-3">
                 @if($waHeader = $siteSettings->get('header.whatsapp_number'))
@@ -171,6 +172,7 @@
             </div>
             <a href="{{ route('home') }}#cara-booking" @click="open=false" class="text-sm font-medium text-neutral-900 py-2 transition-colors hover:text-sage">Cara Booking</a>
             <a href="{{ route('home') }}#artikel" @click="open=false" class="text-sm font-medium text-neutral-900 py-2 transition-colors hover:text-sage">Artikel</a>
+            <a href="{{ route('self-register.index') }}" @click="open=false" class="text-sm font-semibold text-[#87A878] py-2 transition-colors hover:text-[#6B8F5B]">Daftar Mandiri</a>
         </div>
     </header>
 

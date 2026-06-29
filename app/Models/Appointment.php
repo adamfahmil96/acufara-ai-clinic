@@ -20,6 +20,9 @@ class Appointment extends Model
     public const LOCATION_CLINIC = 'clinic';
     public const LOCATION_HOMECARE = 'homecare';
 
+    public const SOURCE_SELF_REGISTER = 'self_register';
+    public const SOURCE_ADMIN = 'admin';
+
     /**
      * @var list<string>
      */
@@ -28,6 +31,8 @@ class Appointment extends Model
         'patient_id',
         'service_id',
         'complaint_summary',
+        'medical_history',
+        'allergy_history',
         'ai_urgency',
         'ai_recommendation',
         'ai_notes',
@@ -38,6 +43,7 @@ class Appointment extends Model
         'lng',
         'final_price',
         'scheduled_at',
+        'source',
     ];
 
     protected static function booted()
