@@ -243,3 +243,44 @@ Daripada memindahkan file `.env` ke GitHub (yang sangat berisiko), praktik palin
 - Artinya, Anda tidak perlu mengirim atau mengatur `.env` di dalam GitHub Actions. Cukup atur di Google Cloud satu kali seumur hidup!
 
 *(Catatan: Jika di masa depan Anda menambahkan fitur baru yang membutuhkan variabel `.env` baru, cukup masuk ke Google Cloud Console dan tambahkan variabel tersebut secara manual di tab Variables & Secrets).*
+
+---
+
+## 5. Migrasi Database Setelah Deploy
+
+> [!IMPORTANT]
+> **Workflow `deploy.yml` HANYA menjalankan build dan deploy image, TIDAK menjalankan migrasi database secara otomatis.** Anda harus menjalankan migrasi secara manual setelah deploy.
+
+### Kapan Migrasi Diperlukan?
+- Saat deploy pertama kali (tabel database masih kosong)
+- Setiap kali ada file migration baru yang ditambahkan di `database/migrations/`
+
+### Cara Menjalankan Migrasi
+
+#### Menggunakan Cloud Run Jobs (Rekomendasi):
+1. Buka [Google Cloud Console > Cloud Run > Jobs](https://console.cloud.google.com/run/jobs)
+2. Klik **"Create Job"** atau gunakan Job yang sudah ada
+3. Set **Container command:** `php`
+4. Set **Container arguments:** `artisan`, `migrate`
+5. Tambahkan **Environment Variables** (sama seperti Service utama)
+6. Klik **"Execute"** untuk menjalankan Job
+
+#### Menggunakan gcloud CLI:
+```bash
+gcloud run jobs execute acufara-migrate \
+  --region=asia-southeast2 \
+  --image=docker.io/adamfahmil96/acufara-ai-clinic:latest \
+  --command=php \
+  --args=artisan,migrate
+```
+
+### Verifikasi Keberhasilan
+- Cek **Logs** di Job execution
+- Pastikan log menunjukkan: `Running migrations.` dan `Container called exit(0)`
+- Cek di Admin Panel atau Supabase Dashboard untuk memastikan kolom baru sudah tersedia
+
+> [!TIP]
+> **Tips Penting:**
+> - Gunakan flag `--force` hanya jika diperlukan (contoh: `php artisan migrate --force`)
+> - Jika ada error terkait `--force`, cukup jalankan tanpa flag tersebut
+> - Selalu backup database sebelum menjalankan migrasi di produksi

@@ -6,7 +6,7 @@
 
             <div class="flex-1" style="flex: 1;">
                 <h2 class="grid flex-1 text-base font-semibold leading-6 text-gray-950 dark:text-white" style="margin: 0; padding: 0;">
-                    Acufara v1.2
+                    Acufara v2.0
                 </h2>
 
                 <p class="text-sm text-gray-500 dark:text-gray-400" style="margin: 0; padding: 0;">

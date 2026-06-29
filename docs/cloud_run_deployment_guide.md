@@ -50,9 +50,63 @@ Masih di tab **Container**, *scroll* ke bawah untuk menemukan menu **Environment
 
 ## Tahap 6: Migrasi Database
 Aplikasi sudah *live*, tetapi tabel database di *cloud* masih kosong. Kita perlu menjalankan migrasi.
-1. Masih di halaman Cloud Run, buka tab **Jobs** (atau ke menu Cloud Run Jobs).
-2. Buat Job baru menggunakan *image* yang sama (`docker.io/adamfahmil96/acufara-ai-clinic:latest`).
-3. Set **Command/Arguments** untuk menjalankan perintah: `php artisan migrate --force`.
-4. Beri akses koneksi Database yang sama di *Environment Variables*, lalu jalankan Job tersebut.
+
+### Langkah-langkah:
+1. Buka [Google Cloud Console > Cloud Run > Jobs](https://console.cloud.google.com/run/jobs).
+2. Klik tombol **"Create Job"** untuk membuat Job baru.
+3. Isi konfigurasi Job:
+   - **Job name:** `acufara-migrate` (atau nama lain)
+   - **Region:** `asia-southeast2`
+   - **Container image URL:** `docker.io/adamfahmil96/acufara-ai-clinic:latest`
+
+### Pengaturan Container Command & Arguments
+Di bagian **"Containers, Connections, Security"**:
+
+| Field | Value |
+| :--- | :--- |
+| **Container command** | `php` |
+| **Container arguments** | `artisan`, `migrate` |
+
+> [!WARNING]
+> **Catatan Penting:**
+> - **Jangan gunakan** flag `--force` di arguments karena Google Cloud Run memiliki issue dalam membaca flag tersebut.
+> - Tanpa `--force`, migrasi akan tetap berjalan dengan aman di environment produksi.
+> - Jika Anda ingin menggunakan `--force`, gunakan command alternatif:
+>   - **Container command:** `/bin/sh`
+>   - **Container arguments:** `-c`
+>   - Tambahkan di **Variables & Secrets**: Name=`CMD`, Value=`php artisan migrate --force`
+
+### Environment Variables untuk Job
+Di tab **"Variables & Secrets"**, tambahkan variabel database yang sama dengan layanan Cloud Run utama:
+
+| Name | Value |
+| :--- | :--- |
+| `DB_CONNECTION` | `pgsql` |
+| `DB_HOST` | *(Host Database Cloud Anda)* |
+| `DB_PORT` | `6543` |
+| `DB_DATABASE` | *(Nama Database)* |
+| `DB_USERNAME` | *(User Database)* |
+| `DB_PASSWORD` | *(Password Database)* |
+
+### Resources
+- **Memory:** `512 MiB`
+- **CPU:** `1`
+
+### Verifikasi Keberhasilan
+Setelah Job dijalankan, pastikan log menunjukkan:
+```
+INFO  Running migrations.
+```
+Dan diakhiri dengan:
+```
+Container called exit(0).
+```
+*(Exit code 0 = Sukses)*
+
+> [!TIP]
+> **Kapan menjalankan Job ini?**
+> - Saat deploy pertama kali (tabel masih kosong)
+> - Setiap kali ada migrasi baru (file migration baru ditambahkan)
+> - Jalankan secara manual dari Cloud Console setiap kali diperlukan
 
 Selamat! Aplikasi Acufara AI Clinic Anda sekarang sudah bisa diakses oleh seluruh masyarakat dari internet! 🚀
