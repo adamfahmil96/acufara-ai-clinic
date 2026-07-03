@@ -228,6 +228,40 @@ MAIL_FROM_NAME="Acufara Monitoring"
 MONITORING_EMAIL=adamfahmil020@gmail.com
 ```
 
+### Generate FONNTE_CHECK_SECRET
+
+`FONNTE_CHECK_SECRET` adalah token rahasia yang **kamu buat sendiri** untuk mengamankan endpoint `/api/fonnte/check`. Token ini digunakan oleh Google Cloud Scheduler untuk autentikasi.
+
+**Fungsi:** Mencegah orang lain memanggil endpoint monitoring secara sembarangan.
+
+**Cara generate menggunakan terminal:**
+
+```bash
+openssl rand -hex 32
+```
+
+Contoh output:
+```
+a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2
+```
+
+**Cara generate menggunakan PHP (alternatif):**
+
+```bash
+php -r "echo bin2hex(random_bytes(32));"
+```
+
+**Cara generate menggunakan Laravel Tinker:**
+
+```bash
+php artisan tinker --execute="echo Str::random(64);"
+```
+
+> [!NOTE]
+> Simpan token ini di tempat aman. Kamu akan membutuhkannya untuk:
+> 1. Konfigurasi `.env` Cloud Run (variabel `FONNTE_CHECK_SECRET`)
+> 2. Konfigurasi Google Cloud Scheduler (header `Authorization: Bearer {token}`)
+
 ### Setup Google Cloud Scheduler
 
 1. Buka Google Cloud Console → Cloud Scheduler
@@ -242,11 +276,37 @@ MONITORING_EMAIL=adamfahmil020@gmail.com
 
 ### Setup Gmail App Password
 
-1. Buka Google Account → Security
-2. Aktifkan 2-Step Verification (jika belum)
-3. Buka App Passwords
-4. Buat password baru untuk "Acufara Monitoring"
-5. Copy password 16 karakter ke `MAIL_PASSWORD`
+> [!IMPORTANT]
+> **Prasyarat:** 2-Step Verification harus AKTIF terlebih dahulu. Tanpa ini, menu App Passwords tidak akan muncul.
+
+**Langkah-langkah:**
+
+1. **Aktifkan 2-Step Verification** (jika belum):
+   - Buka: https://myaccount.google.com/security
+   - Cari bagian "How you sign in to Google" → "2-Step Verification"
+   - Klik "Get Started" dan ikuti instruksi
+
+2. **Buka halaman App Passwords:**
+   - Langsung kunjungi: **https://myaccount.google.com/apppasswords**
+   - Atau via menu: Google Account → Security → 2-Step Verification → scroll ke bawah → "App passwords"
+
+3. **Buat App Password baru:**
+   - Klik "Select app" → Pilih **"Other (Custom name)"**
+   - Ketik nama: `Acufara Monitoring`
+   - Klik **"Generate"**
+
+4. **Copy password:**
+   - Akan muncul password 16 karakter (contoh: `abcd efgh ijkl mnop`)
+   - Copy password tersebut ke variabel `MAIL_PASSWORD` di Cloud Run
+
+> [!NOTE]
+> Password hanya ditampilkan SEKALI. Pastikan langsung copy dan simpan di tempat aman.
+
+> [!TIP]
+> Jika menu "App passwords" tidak muncul, kemungkinan:
+> - 2-Step Verification belum aktif
+> - Menggunakan akun organisasi/kantor (dibatasi admin)
+> - Menggunakan Security Key saja (tambah metode verifikasi lain)
 
 ---
 
