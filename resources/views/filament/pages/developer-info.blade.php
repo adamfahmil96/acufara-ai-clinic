@@ -29,10 +29,22 @@
     <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
         <h3 class="text-gray-950 dark:text-white" style="font-size: 1.25rem; font-weight: bold; margin: 0; padding: 0;">Catatan Perubahan (Change Logs)</h3>
 
-        <!-- Change Log v2.0 -->
+        <!-- Change Log v2.1 -->
         <x-filament::section collapsible>
             <x-slot name="heading">
-                Acufara v2.0 (Saat Ini)
+                Acufara v2.1 (Saat Ini)
+            </x-slot>
+            <x-slot name="description">
+                Penambahan halaman Analitik dengan filter interaktif, tren pendapatan, dan breakdown per layanan.
+            </x-slot>
+            
+            @include('filament.pages.changelogs.v2-1')
+        </x-filament::section>
+
+        <!-- Change Log v2.0 -->
+        <x-filament::section collapsible collapsed>
+            <x-slot name="heading">
+                Acufara v2.0
             </x-slot>
             <x-slot name="description">
                 Penambahan riwayat medis (penyakit & alergi) pada form booking dan notifikasi WhatsApp
