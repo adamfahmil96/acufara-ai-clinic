@@ -28,10 +28,10 @@ class FonnteDisconnectedMail extends Mailable
         return new Content(
             view: 'emails.fonnte-disconnected',
             with: [
-                'connected' => $this->status['connected'],
-                'message' => $this->status['message'],
-                'checkedAt' => $this->status['checked_at'],
-                'appUrl' => config('app.url'),
+                'fonnteConnected' => $this->status['connected'],
+                'fonnteMessage' => $this->status['message'],
+                'fonnteCheckedAt' => $this->status['checked_at'],
+                'fonnteAppUrl' => config('app.url'),
             ],
         );
     }

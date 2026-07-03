@@ -37,17 +37,34 @@ class FonnteMonitoringService
             ])->post('https://api.fonnte.com/device');
 
             $data = $response->json();
-            $isConnected = $data['status'] ?? false;
+
+            // Log response mentah untuk debugging
+            Log::debug('[FONNTE MONITOR] Raw response: ' . json_encode($data));
+
+            // Response Fonntee:
+            // - "status": true/false → status API request (berhasil/gagal)
+            // - "device_status": "connected"/"disconnect" → status koneksi WhatsApp
+            $deviceStatus = $data['device_status'] ?? 'unknown';
+            $isConnected = strtolower($deviceStatus) === 'connected';
+
+            $message = $isConnected
+                ? 'Device terhubung'
+                : "Device status: {$deviceStatus}";
 
             $result = [
                 'connected' => $isConnected,
-                'message' => $isConnected ? 'Device terhubung' : ($data['reason'] ?? 'Device tidak terhubung'),
+                'device_status' => $deviceStatus,
+                'device' => $data['device'] ?? null,
+                'name' => $data['name'] ?? null,
+                'expired' => $data['expired'] ?? null,
+                'quota' => $data['quota'] ?? null,
+                'message' => $message,
                 'checked_at' => now()->toISOString(),
             ];
 
             Cache::put(self::CACHE_KEY, $result, self::CACHE_TTL);
 
-            Log::info('[FONNTE MONITOR] Status check: ' . ($isConnected ? 'CONNECTED' : 'DISCONNECTED'));
+            Log::info('[FONNTE MONITOR] Status check: ' . ($isConnected ? 'CONNECTED' : 'DISCONNECTED') . ' | Device: ' . ($data['device'] ?? '-') . ' | Status: ' . $deviceStatus);
 
             return $result;
         } catch (\Exception $e) {

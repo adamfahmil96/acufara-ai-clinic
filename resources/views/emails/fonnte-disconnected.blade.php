@@ -82,11 +82,11 @@
         </tr>
         <tr>
             <td>Pesan Error</td>
-            <td>{{ $message }}</td>
+            <td>{{ $fonnteMessage }}</td>
         </tr>
         <tr>
             <td>Waktu Deteksi</td>
-            <td>{{ \Carbon\Carbon::parse($checkedAt)->translatedFormat('l, d F Y H:i:s') }} WIB</td>
+            <td>{{ \Carbon\Carbon::parse($fonnteCheckedAt)->translatedFormat('l, d F Y H:i:s') }} WIB</td>
         </tr>
     </table>
 
@@ -106,7 +106,7 @@
 
     <div class="footer">
         <p>Ini adalah email otomatis dari sistem monitoring Acufara AI Clinic.</p>
-        <p>App URL: {{ $appUrl }}</p>
+        <p>App URL: {{ $fonnteAppUrl }}</p>
     </div>
 </body>
 </html>
