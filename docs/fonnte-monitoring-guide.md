@@ -204,6 +204,61 @@ Alasan:
 | 6 | `routes/api.php` | Tambah route untuk endpoint monitoring |
 | 7 | `config/services.php` | Tambah konfigurasi monitoring |
 | 8 | `.env` | Tambah variabel konfigurasi |
+| 9 | `docker/entrypoint.sh` | Script untuk clear cache saat container start |
+| 10 | `Dockerfile` | Update untuk menggunakan entrypoint script |
+
+### Auto-Clear Cache Saat Deploy
+
+Untuk memastikan route dan config selalu fresh setiap deploy, digunakan entrypoint script yang akan menjalankan clear cache saat container start.
+
+**File: `docker/entrypoint.sh`**
+```bash
+#!/bin/sh
+set -e
+
+echo "🚀 Starting Acufara AI Clinic..."
+
+# Clear all caches to ensure fresh start
+echo "🧹 Clearing caches..."
+php artisan route:clear 2>/dev/null || true
+php artisan config:clear 2>/dev/null || true
+php artisan cache:clear 2>/dev/null || true
+php artisan view:clear 2>/dev/null || true
+php artisan optimize:clear 2>/dev/null || true
+
+# Run migrations if needed
+if [ "$RUN_MIGRATIONS" = "true" ]; then
+    echo "📦 Running migrations..."
+    php artisan migrate --force
+fi
+
+echo "✅ Ready!"
+
+# Start FrankenPHP
+exec "$@"
+```
+
+**Perubahan di Dockerfile:**
+```dockerfile
+# Copy entrypoint script
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
+```
+
+**Cara kerja:**
+1. Setiap kali container start, entrypoint script akan dijalankan terlebih dahulu
+2. Script akan clear semua cache (route, config, view, cache)
+3. Jika variabel `RUN_MIGRATIONS=true`, migration akan dijalankan
+4. Setelah selesai, FrankenPHP akan dimulai
+
+**Keuntungan:**
+- ✅ Route baru selalu terdeteksi setiap deploy
+- ✅ Config cache selalu fresh
+- ✅ Tidak perlu manual clear cache
+- ✅ Migration bisa dijalankan otomatis jika diperlukan
 
 ### Variabel Environment yang Dibutuhkan
 
