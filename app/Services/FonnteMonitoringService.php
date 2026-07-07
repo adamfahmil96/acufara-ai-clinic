@@ -43,9 +43,10 @@ class FonnteMonitoringService
 
             // Response Fonntee:
             // - "status": true/false → status API request (berhasil/gagal)
-            // - "device_status": "connected"/"disconnect" → status koneksi WhatsApp
-            $deviceStatus = $data['device_status'] ?? 'unknown';
-            $isConnected = strtolower($deviceStatus) === 'connected';
+            // - "device_status": "connect"/"connected"/"disconnect" → status koneksi WhatsApp
+            // CATATAN: Fonntee bisa mengembalikan "connect" ATAU "connected"
+            $deviceStatus = strtolower($data['device_status'] ?? 'unknown');
+            $isConnected = in_array($deviceStatus, ['connect', 'connected']);
 
             $message = $isConnected
                 ? 'Device terhubung'
