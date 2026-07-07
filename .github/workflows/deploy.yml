@@ -29,7 +29,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:latest
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:${{ github.sha }}
 
       # 4. Otentikasi ke Google Cloud (Standar API V2 2026)
       - name: Google Auth
@@ -44,5 +46,16 @@ jobs:
         with:
           service: acufara-ai-clinic      # Sesuaikan dengan nama layanan Anda di GCP
           region: asia-southeast2         # Region Jakarta
-          image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:latest
+          image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:${{ github.sha }}
           flags: '--allow-unauthenticated' # Agar website bisa diakses publik
+
+      # 6. Update image pada migration job & jalankan migration
+      - name: Run Database Migration
+        run: |
+          gcloud run jobs update acufara-ai-clinic-migration \
+            --region asia-southeast2 \
+            --project juaravibecoding-202605 \
+            --image docker.io/${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:${{ github.sha }}
+          gcloud run jobs execute acufara-ai-clinic-migration \
+            --region asia-southeast2 \
+            --project juaravibecoding-202605
