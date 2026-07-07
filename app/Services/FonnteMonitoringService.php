@@ -27,7 +27,7 @@ class FonnteMonitoringService
             return [
                 'connected' => false,
                 'message' => 'FONNTE_TOKEN tidak diatur',
-                'checked_at' => now()->toISOString(),
+                'checked_at' => now()->setTimezone('Asia/Jakarta')->toISOString(),
             ];
         }
 
@@ -60,7 +60,7 @@ class FonnteMonitoringService
                 'expired' => $data['expired'] ?? null,
                 'quota' => $data['quota'] ?? null,
                 'message' => $message,
-                'checked_at' => now()->toISOString(),
+                'checked_at' => now()->setTimezone('Asia/Jakarta')->toISOString(),
             ];
 
             Cache::put(self::CACHE_KEY, $result, self::CACHE_TTL);
@@ -74,7 +74,7 @@ class FonnteMonitoringService
             $result = [
                 'connected' => false,
                 'message' => 'Error: ' . $e->getMessage(),
-                'checked_at' => now()->toISOString(),
+                'checked_at' => now()->setTimezone('Asia/Jakarta')->toISOString(),
             ];
 
             Cache::put(self::CACHE_KEY, $result, self::CACHE_TTL);
