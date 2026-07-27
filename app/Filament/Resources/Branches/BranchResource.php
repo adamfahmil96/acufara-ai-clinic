@@ -62,8 +62,15 @@ class BranchResource extends Resource
                 TextInput::make('whatsapp_number')
                     ->label('Nomor WhatsApp Cabang')
                     ->placeholder('628xxxxxxxxxx')
-                    ->helperText('Nomor WA ini akan menerima notifikasi booking dari pasien (tipe Klinik).')
+                    ->helperText('Sekadar info kontak cabang. Notifikasi booking kini dikirim via Telegram.')
                     ->maxLength(20)
+                    ->columnSpan(2),
+
+                TextInput::make('telegram_chat_id')
+                    ->label('Telegram Chat ID Cabang')
+                    ->placeholder('-1001234567890')
+                    ->helperText('Grup Telegram yang menerima notifikasi booking tipe Klinik. Kosongkan untuk memakai grup default Acufara. Nilai grup bernilai negatif (supergroup berawalan -100).')
+                    ->maxLength(32)
                     ->columnSpan(2),
 
                 // ─── Koordinat ───────────────────────────────────────────────
@@ -162,6 +169,10 @@ class BranchResource extends Resource
                     ->label('WA Cabang')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: false),
+                TextColumn::make('telegram_chat_id')
+                    ->label('Telegram')
+                    ->placeholder('Grup default')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_active')
                     ->label('Aktif')
                     ->boolean(),

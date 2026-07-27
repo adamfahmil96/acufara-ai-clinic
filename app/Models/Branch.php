@@ -18,6 +18,7 @@ class Branch extends Model
         'nama_cabang',
         'alamat',
         'whatsapp_number',
+        'telegram_chat_id',
         'is_active',
         'lat',
         'lng',

@@ -8,7 +8,7 @@ use App\Models\Patient;
 use App\Models\Service;
 use App\Models\User;
 use App\Services\GeminiService;
-use App\Services\WhatsAppNotificationService;
+use App\Services\BookingNotificationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -59,7 +59,7 @@ class SelfRegisterController extends Controller
     /**
      * Proses booking mandiri.
      */
-    public function store(Request $request, WhatsAppNotificationService $waService)
+    public function store(Request $request, BookingNotificationService $notifier)
     {
         $request->validate([
             'whatsapp_number'     => 'required|string|min:10|max:20',
@@ -159,11 +159,13 @@ class SelfRegisterController extends Controller
 
             DB::commit();
 
-            // Kirim notifikasi WA ke Acufara (di luar transaksi)
+            // Kirim notifikasi ke Acufara (di luar transaksi).
+            // Sengaja sinkron: tidak ada queue worker di Cloud Run, sehingga
+            // dispatch() akan menumpuk di tabel jobs tanpa pernah terkirim.
             try {
-                $waService->notifyNewBooking($appointment);
+                $notifier->notifyNewBooking($appointment);
             } catch (\Throwable $e) {
-                Log::error('[SELF REGISTER] Gagal kirim WA notification: ' . $e->getMessage());
+                Log::error('[SELF REGISTER] Gagal kirim notifikasi booking: ' . $e->getMessage());
             }
 
             return redirect()

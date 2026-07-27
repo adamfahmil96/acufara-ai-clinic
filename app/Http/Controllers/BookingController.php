@@ -8,8 +8,10 @@ use App\Models\Service;
 use App\Models\Branch;
 use App\Models\Appointment;
 use App\Models\SiteSetting;
+use App\Services\BookingNotificationService;
 use App\Services\GeminiService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -51,7 +53,7 @@ class BookingController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function store(Request $request, BookingNotificationService $notifier)
     {
         $request->validate([
             'service_id'        => 'required|exists:services,id',
@@ -73,7 +75,7 @@ class BookingController extends Controller
             return back()->with('error', 'Data pasien tidak ditemukan.');
         }
 
-        Appointment::create([
+        $appointment = Appointment::create([
             'patient_id'        => $patient->id,
             'service_id'        => $request->service_id,
             'branch_id'         => $request->branch_id,
@@ -89,6 +91,14 @@ class BookingController extends Controller
             'address_at_time'   => $request->service_location_type === 'homecare' ? $request->address_at_time : null,
             'final_price'       => Service::find($request->service_id)->base_price ?? 0,
         ]);
+
+        // Booking dari pasien yang sudah login sebelumnya tidak pernah memberi tahu
+        // klinik — hanya jalur /daftar yang mengirim notifikasi. Disamakan di sini.
+        try {
+            $notifier->notifyNewBooking($appointment);
+        } catch (\Throwable $e) {
+            Log::error('[BOOKING] Gagal kirim notifikasi booking: ' . $e->getMessage());
+        }
 
         return redirect()->route('profile')->with('success', 'Jadwal Anda berhasil dibuat! Silakan tunggu konfirmasi dari pihak klinik.');
     }

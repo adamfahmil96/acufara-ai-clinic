@@ -1,6 +1,13 @@
 # Panduan Monitoring & Notifikasi Fonntee WhatsApp Gateway
 *Terakhir Diperbarui: Juli 2026*
 
+> [!IMPORTANT]
+> **Ruang lingkup dokumen ini kini terbatas pada OTP login pasien.**
+> Sejak 27 Juli 2026, notifikasi booking ke klinik/admin **tidak lagi lewat Fonntee**
+> melainkan lewat Telegram — lihat
+> [docs/decisions/ADR-001-telegram-notifikasi-internal.md](decisions/ADR-001-telegram-notifikasi-internal.md).
+> Monitoring di bawah tetap diperlukan selama OTP masih memakai Fonntee.
+
 Dokumen ini menjelaskan analisis masalah, solusi, dan implementasi sistem monitoring Fonntee WhatsApp Gateway untuk Acufara AI Clinic.
 
 ---

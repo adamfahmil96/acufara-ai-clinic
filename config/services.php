@@ -24,12 +24,19 @@ return [
 
     'fonnte' => [
         'token' => env('FONNTE_TOKEN'),
-        'acufara_number' => env('ACUFARA_WHATSAPP_NUMBER'),
         'check_enabled' => env('FONNTE_CHECK_ENABLED', false),
         'check_secret' => env('FONNTE_CHECK_SECRET'),
         'check_interval' => env('FONNTE_CHECK_INTERVAL', 5),
         'email_throttle' => env('FONNTE_EMAIL_THROTTLE', 30),
         'monitoring_email' => env('MONITORING_EMAIL'),
+    ],
+
+    'telegram' => [
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+        'default_chat_id' => env('TELEGRAM_DEFAULT_CHAT_ID'),
+        // Jaring pengaman jika Telegram gagal. Memakai MONITORING_EMAIL yang sama
+        // dengan monitoring Fonnte agar tidak menambah variabel baru.
+        'fallback_email' => env('MONITORING_EMAIL'),
     ],
 
     'ses' => [
