@@ -44,10 +44,12 @@ jobs:
       - name: Deploy to Cloud Run
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: acufara-ai-clinic      # Sesuaikan dengan nama layanan Anda di GCP
-          region: asia-southeast2         # Region Jakarta
+          service: acufara-ai-clinic
+          region: asia-southeast2
           image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/acufara-ai-clinic:${{ github.sha }}
-          flags: '--allow-unauthenticated' # Agar website bisa diakses publik
+          flags: '--allow-unauthenticated --min-instances=0 --max-instances=5'
+          # env_vars: |
+          #   SERVER_NAME=:80
 
       # 6. Update image pada migration job & jalankan migration
       - name: Run Database Migration
