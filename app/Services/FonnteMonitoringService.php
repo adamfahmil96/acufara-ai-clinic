@@ -108,9 +108,9 @@ class FonnteMonitoringService
             return;
         }
 
-        $lastEmailSent = Cache::get('fonnte_last_email_sent_at');
+        $lastEmailSentAt = Cache::get('fonnte_last_email_sent_at');
 
-        if ($lastEmailSent && now()->diffInMinutes($lastEmailSent) < $emailThrottle) {
+        if (is_int($lastEmailSentAt) && now()->diffInMinutes(\Carbon\Carbon::createFromTimestamp($lastEmailSentAt)) < $emailThrottle) {
             Log::info('[FONNTE MONITOR] Email throttle aktif, skip pengiriman');
             return;
         }
@@ -118,7 +118,7 @@ class FonnteMonitoringService
         try {
             Mail::to($monitoringEmail)->send(new FonnteDisconnectedMail($status));
 
-            Cache::put('fonnte_last_email_sent_at', now(), $emailThrottle * 60);
+            Cache::put('fonnte_last_email_sent_at', now()->timestamp, $emailThrottle * 60);
 
             Log::info('[FONNTE MONITOR] Email notifikasi terkirim ke ' . $monitoringEmail);
         } catch (\Exception $e) {
